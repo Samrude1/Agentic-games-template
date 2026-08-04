@@ -3,82 +3,44 @@ name: init
 description: Bootstraps a new game project from the template by interviewing the user and automatically populating all context files (architecture, project-overview, game-asset-registry, etc.).
 ---
 
-A generic game template is not a game. A game has a specific core loop, a genre, and strict performance boundaries. 
-
-When a developer clones this generic template to start something new, this skill transforms the empty shell into a highly opinionated, context-aware foundation. It ensures that every future AI session starts with a deep understanding of what is actually being built.
+The `Agentic-games-template` is a generic game foundation. When a developer clones it to start a new game, this skill transforms the generic template into a specific, documented project foundation.
 
 Run this skill ONLY when starting a brand new project, or when the user explicitly calls `/init` or `/bootstrap`.
 
 ---
 
-## Step 1 — The Context Interview
+## Step 1 — Gather Initial Requirements
 
-Do not start writing files immediately. Do not guess what the game is about. Your first job is to extract the vision.
+Do not start writing files immediately. First, gather the requirements.
+1. **Check for existing specs**: Always look for and read `docs/future-project-vision.md` or any initial prompt the user provides. This usually contains the "big picture" of the game.
+2. **Interview if needed**: If a vision document exists, use it as your foundation. Only ask the user clarifying questions about details that are missing from the document. If no document exists, ask the user to describe:
+   - What is the core game loop?
+   - What is the genre and visual style (pixel art, 3D, vector)?
+   - What are the main entities and mechanics?
+   - Are there any specific architectural constraints (e.g., specific engine versions, physics library)?
 
-Check for an existing vision document (e.g., `docs/future-project-vision.md` or a prompt). If one exists, use it. If not, or if it is incomplete, interview the developer.
-
-Ask exactly these questions, one at a time if necessary:
-
-```
-Let's bootstrap this game project. Before I populate the context files, I need to know what we are building:
-
-1. What is the core game loop in one sentence?
-2. What is the genre and visual style (e.g., 2D pixel art platformer, top-down Python shooter)?
-3. What are the 3-4 main entities or mechanics (e.g., Player, Enemies, Collectibles)?
-4. Are you using HTML/JS Canvas, Python Pygame, or another native approach? (Note: External engines like Unity are forbidden).
-```
-
-Wait for the developer to answer. Do not proceed until you have a clear picture.
+Wait for the user's response (or confirmation that you have enough info) before proceeding.
 
 ---
 
-## Step 2 — Propose the Context Mapping
+## Step 2 — Plan the Context
 
-Once you understand the vision, map out exactly how you will alter the `.agents/context/` files. Do not write the files yet. Present the plan.
-
-```
-Got it. Here is how I will configure the project context:
-
-- project-overview.md: [Brief summary of the game's core loop and genre]
-- architecture.md: [The specific native rendering approach (e.g. JS Canvas) and update loop]
-- game-asset-registry.md: [The initial core sprites/audio needed based on the mechanics]
-- ui-registry.md: [The primary design tokens for the HUD/Menus]
-
-Does this foundation look correct?
-```
-
-Wait for explicit approval.
+Based on the user's answers, formulate a plan to update the `.agents/context/` files.
+- `project-overview.md`: Replace all `[bracketed]` boilerplate with the actual game details, goals, and scope.
+- `architecture.md`: Define the specific tech stack, rendering loop, state management, and physics approach suited for this game.
+- `game-asset-registry.md`: Draft the initial necessary core assets (e.g., player sprite placeholder, basic level map).
+- `ui-registry.md`: Define the primary design tokens (colors, fonts) for the game's HUD and menus.
 
 ---
 
-## Step 3 — Aggressive Overwrite
+## Step 3 — Populate the Files
 
-Once approved, execute the plan. You must aggressively overwrite the generic boilerplate in the `.agents/context/` directory.
-
-- Remove all `[Project Name]` or `[Insert description]` placeholders.
-- Write definitive, confident documentation based on the interview.
-- Ensure `architecture.md` clearly states what is allowed and what is forbidden (strictly forbidding Unity/Godot/Unreal).
+Once the user approves the overall plan, aggressively overwrite the boilerplate in the `.agents/context/` folder with the new, specific game information. 
+Use your file editing tools to remove the generic placeholders and insert the real game concept.
 
 ---
 
-## Step 4 — The Handoff
+## Step 4 — Handoff
 
-When the files are updated, the project is officially bootstrapped. The template is now a bespoke game codebase.
-
-Close the loop with the developer:
-
-```
-Bootstrap complete. All context files are populated.
-The AI now understands the rules, mechanics, and native architecture of this game.
-
-What is the first entity or feature we are building? (I recommend running /architect when you are ready).
-```
-
----
-
-## ⚠️ Anti-Patterns — Never Do These
-
-- ❌ **Never assume an external game engine.** This template is strictly for native from-scratch development (HTML/JS Canvas, Python Pygame, etc.).
-- ❌ **Never invent requirements.** If the user gives a vague one-word idea, ask clarifying questions. Do not hallucinate a massive RPG if they wanted Pong.
-- ❌ **Never leave generic boilerplate behind.** A context file with `[Insert purpose here]` is a failure.
-- ❌ **Never skip the interview.** Bootstrapping without understanding the domain leads to architecture drift on day one.
+Once the context is populated, the game project is officially bootstrapped. 
+Inform the user that the AI is now fully aware of the game's rules, mechanics, and architecture, and ask what feature/entity they would like to build first (often triggering `/architect`).

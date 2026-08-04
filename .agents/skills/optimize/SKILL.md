@@ -47,6 +47,7 @@ Once approved, perform the refactoring:
 ## Step 4 — Verify
 
 Refactoring must not change the expected behavior of the game.
+- **Empirical Check**: Run syntax checks (`node -c`) or automated test scripts to ensure zero runtime regressions.
 - Ensure the optimized code still fulfills all original mechanics.
 - Run `/review` if needed to double-check against project standards.
-- If a new architectural pattern was established (like a new Entity Component structure), recommend running `/imprint` so it becomes the new standard.
+- If a new architectural pattern was established (like a new Entity Component structure), run `/imprint` so it becomes the new standard.
