@@ -1,59 +1,126 @@
-# 🎮 Agentic Games Template (Engine-less)
+# HTML/CSS/JS Pelinkehitystemplate (Antigravity Solo Dev Kit)
 
-Welcome to the **Agentic Games Template**. This is a highly opinionated, AI-first development environment designed for **Autonomous Game Engineering**.
-
-Unlike traditional game dev workflows, this template enforces a strict **Engine-less Architecture**. There is no Unity, Godot, or Unreal here. Games are built completely from scratch using native technologies (e.g., HTML5/JS Canvas or Python Pygame). This gives you and the AI complete, transparent control over the game loop, rendering pipeline, and memory management.
-
-Most importantly, it includes an **AI Brain** (`.agents/` directory) that forces your AI coding assistant (like Antigravity IDE, Claude, or Cursor) to act like a disciplined Senior Game Developer, preventing spaghetti code and architecture drift.
+Tämä repository on ammattimainen kehitystemplate ja työnkulkupaketti suorituskykyisten **HTML5 Canvas / JavaScript** -pelien rakentamiseen, olemassa olevien projektien haltuunottoon, koodin optimointiin, automatisoituun selaintestaukseen sekä **pitkäkestoiseen muistiin ja sessiovaihtoihin** yhden hengen tiimille AI-agentin kanssa.
 
 ---
 
-## 🚀 The Secret Sauce: The `.agents` Directory
+## ⚡ Slash-Komennot & Toiminnot (Commands & Skills)
 
-AI agents are fast, but without discipline, they create unmanageable technical debt—especially in game development where performance is critical. This template solves that with a set of rules, workflows, and cognitive skills that your AI assistant must read and follow.
+Kaikki toiminnot ohjataan suoraan ytimekkäillä slash-komennoilla ilman pitkiä selityksiä:
 
-### 📁 Structure
-- **`/context`**: The Ground Truth. Contains your `project-overview.md`, `architecture.md` (defining your native game loop), `game-asset-registry.md`, and `ui-registry.md`. The AI reads this before modifying *any* code.
-- **`/workflows`**: The Processes. Defines *what* the AI should do (e.g., adding an AI agent, creating a game entity, designing a level). Built on a strict "Gold-Standard" YAML-frontmatter template for reliable AI execution.
-- **`/skills`**: The Cognitive Tools. Defines *how* the AI should think and execute. Includes highly-structured, S-tier behavioral prompts like `/init`, `/architect`, `/optimize`, `/recover`, `/remember`, `/test`, and `/review`.
+### 1. 🌅 Uuden Päivän / Session Aloitus (`/resume`)
+Kun aloitat uuden puhtaan keskustelun:
+```
+/resume
+```
+- Lukee välittömästi sessiomuistin ja päivän 2–4 avaintiedostoa.
+- Antaa heti napakan tilannekuvan ja suositellun aloituspisteen ilman kontekstin tuhlausta!
+
+### 2. 🚀 Uuden Pelin Aloitus (`/init`)
+Aloita tyhjästä tai ideasta:
+```
+/init
+```
+- **Grill-Me -haastattelu**: Kysyy 4 ydinkysymystä, jos valmista suunnitelmaa ei ole.
+- **Blueprintin generointi**: Luodaan `GDD.md`, `ARCHITECTURE.md` ja `PROJECT_STATUS.md` kansioon `.agents/blueprint/`.
+- **Valmis koodirunko**: Pystyttää heti pelattavan 60 FPS Canvas-rungon, multi-inputin, Web Audio -äänet ja `src/utils/` -kirjaston.
+
+### 3. 🧪 Automatisoitu Pelitestaus Selaimessa (`/test` tai `/playtest`)
+Testaa peli koodimuutosten jälkeen ilman manuaalista säätöä:
+```
+/test
+```
+- Avaa pelin selaimessa (`browser_subagent`).
+- Tarkistaa konsolivirheet, Canvas-renderöinnin, 60 FPS -vakauden ja Web Audio -tilan.
+- Tuottaa visuaalisen testiraportin kuvakaappauksineen.
+
+### 4. 🐛 Vikadiagnostiikka & Korjaus (`/debug` tai `/fix`)
+Kun jokin ei toimi, näyttö on musta tai fysiikka sekoaa:
+```
+/debug
+```
+- Etsii juurisyyn: koordinaattivirheet, NaN-arvot, z-indexit tai tilakoneen jäätymiset.
+- Korjaa koodin ja kirjaa havainnot tiedostoon `.agents/blueprint/KNOWN_BUGS.md`.
+
+### 5. 🔍 Koodin Laadunvarmistus & Optimointi (`/review` tai `/optimize`)
+Tarkista peli koodauspäivän päätteeksi:
+```
+/review
+```
+- **Suorituskykytarkastus (60 FPS)**: GC-kuorma (objektipoolit), törmäystarkistukset, layout thrashing.
+- **Spagetin purku**: Jättiluokat, liian tiukka kytkentä ja globaalit muuttujat.
+- **Tyyliauditointi (Style Drift)**: Varmistaa, että CSS-muuttujat ja `.btn-*` -standardit pitävät.
+
+### 6. 🌆 Päivän / Session Päätös (`/save`)
+Kun haluat lopettaa keskustelun ja säästää tokeneita:
+```
+/save
+```
+- Tiivistää tehdyt muutokset ja koodin vakauden tiedostoon `.agents/blueprint/SESSION_STATE.md`.
+- Kirjaa kehityspäiväkirjaan merkinnän tiedostoon `.agents/blueprint/DEV_LOG.md`.
+- Määrittää tarkan seuraavan tehtävän huomiselle. Voit sulkea chatin turvallisin mielin.
+
+### 7. 📦 Paketointi & Julkaisu (`/build` tai `/deploy`)
+Kun peli on valmis julkaistavaksi:
+```
+/build
+```
+- PWA manifest + Service Worker offline-pelaamista varten.
+- itch.io ja GitHub Pages -jakelupaketointi.
 
 ---
 
-## ⚙️ The Engineering Loop
+## 🔄 Kehittäjän Työnkulkukartta (Solo Dev Loop)
 
-You don't tell the AI to "just build a new enemy". You put it through the **Engineering Loop**.
-
-1. **Architect (`/architect`)**: The AI creates an Implementation Plan and surfaces architectural decisions (e.g., physics, state). It waits for your approval.
-2. **Develop**: The AI writes the code according to the approved plan.
-3. **Review (`/review`)**: The AI audits its own code against the project's architecture, looking for GC spikes or performance bottlenecks.
-4. **Imprint (`/imprint`)**: If a new visual or entity pattern was introduced, the AI saves it to the registry to guarantee consistency.
-5. **Remember (`/remember save`)**: At the end of the session, the AI saves the state to `memory.md` so it never loses context between days.
-
----
-
-## 🛠️ How to Start Using This Template
-
-1. **Clone & Initialize**
-   ```bash
-   git clone https://github.com/Samrude1/Agentic-games-template.git my-new-game
-   cd my-new-game
-   ```
-
-2. **Set Your Game Context**
-   Open your AI editor and run the `/init` skill.
-   > *"Run `/init` to set up this new game project."*
-   
-   The AI will interview you about your game's core loop, genre, and tech stack (Canvas vs. Pygame), and then automatically populate the `.agents/context/` directory with your specific goals.
-
-3. **Engage the AI**
-   Once the context is initialized, give your prompt to kick off the development:
-   > *"Let's build the player character. Follow the `/game-entity` workflow."*
+```mermaid
+graph TD
+    A["🌅 1. /resume<br/>(Herätys & konteksti)"] --> B["🔨 2. Ominaisuuden kehitys<br/>(Yksi ominaisuus kerrallaan)"]
+    B --> C["🧪 3. /test<br/>(Automatisoitu testaus selaimessa)"]
+    C -- Bugeja havaittu --> D["🐛 4. /debug<br/>(Juurisyy & nopea korjaus)"]
+    D --> B
+    C -- Kaikki toimii --> E["🔍 5. /review<br/>(GC, spagetti & tyyliauditointi)"]
+    E --> F["🌆 6. /save<br/>(Muistiin vienti & lepo)"]
+    F --> G["🚀 7. /build<br/>(PWA & jakelu itch.io / GitHub)"]
+```
 
 ---
 
-## 📦 Tech Stack (Engine-less Philosophy)
-This template is agnostic to the exact native language, but it strictly forbids external engines. Recommended approaches include:
-- **Web Games**: HTML5 Canvas + Vanilla JavaScript/TypeScript
-- **Desktop Games**: Python + Pygame
+## 📁 Projektin Rakenne (Skill-First)
 
-*Built for game developers who want to own their engine and lead their AI.*
+Projektin pysyvä totuuden lähde (Single Source of Truth) sijaitsee kansiossa `.agents/blueprint/`:
+
+```text
+.agents/
+├── blueprint/                  # 📌 Koko projektin pysyvä totuuden lähde ja muisti
+│   ├── GDD.md                  # Pelisuunnitelma (konsepti, mekaniikat, ohjaus)
+│   ├── ARCHITECTURE.md         # Tekninen arkkitehtuuri (luokat, silmukka, datavirta)
+│   ├── STYLE_GUIDE.md          # 🎨 Design System: CSS-muuttujat, napit (.btn-*), typografia
+│   ├── PROJECT_STATUS.md       # Nykytila, valmiusaste %, tekninen velka ja tiekartta
+│   ├── CODE_REVIEW.md          # Laatu- ja optimointiraportti terveyspisteineen
+│   ├── KNOWN_BUGS.md           # Tiedossa olevat ja korjatut bugit
+│   ├── SESSION_STATE.md        # 🧠 Aktiivinen viestikapula sessioiden välillä
+│   └── DEV_LOG.md              # 📜 Kehityspäiväkirja ja tehtyjen sessioiden historia
+├── rules/
+│   └── game-dev.md             # Pelinkehityksen parhaat käytännöt (60fps, delta-time, pooling, canvas)
+└── skills/
+    ├── game-init/              # /init – Uuden pelin alustus ja boilerplate-resurssit
+    ├── game-onboard/           # /onboard – Keskeneräisen koodin auditointi
+    ├── game-review/            # /review – Koodin laadunvarmistus & optimointi
+    ├── game-test/              # /test – Automatisoitu selaintestaus ja raportointi
+    ├── game-debug/             # /debug – Vikadiagnostiikka ja korjaus
+    ├── game-memory/            # /save & /resume – Pitkäkestoinen sessiomuisti
+    └── game-deploy/            # /build – PWA ja jakelupaketointi (itch.io, GitHub Pages)
+```
+
+---
+
+## 🎮 Arkkitehtuurin Ydinominaisuudet
+
+- **Engine (`src/core/Engine.js`)**: 60 FPS `requestAnimationFrame`, suojattu `deltaTime`, automaattinen pause/resume välilehden vaihtuessa (`visibilitychange`) ja resoluution skaalaus.
+- **Input (`src/core/Input.js`)**: Yhtenäinen näppäimistö-, hiiri- ja kosketusnäyttöohjaus virtuaalisilla napeilla.
+- **Audio (`src/core/Audio.js`)**: 100% koodipohjainen Web Audio API -äänisynteesi tarkalla kellotuksella ilman ulkoisia tiedostoja.
+- **State & Juice (`src/core/State.js`)**: Skenehallinta ja partikkelisysteemi, joka käyttää `ObjectPool`ia muistin säästämiseksi.
+- **Utilities (`src/utils/`)**:
+  - `ObjectPool.js`: Geneerinen objektipooli (GC-lagipiikkien eliminointi).
+  - `math.js`: `clamp`, `lerp`, `distanceSq`, `angleBetween`, `normalize`.
+  - `Collision.js`: `circleVsCircle`, `rectVsRect`, `circleVsRect`, `pointInRect`.

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0f172a" />
+  <title>{{GAME_TITLE}}</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="game-container">
+    <!-- Game Canvas -->
+    <canvas id="game-canvas"></canvas>
+
+    <!-- Overlay UI (Start Screen, Pause, Game Over) -->
+    <div id="ui-overlay" class="overlay visible">
+      <div class="overlay-content">
+        <h1 id="ui-title">{{GAME_TITLE}}</h1>
+        <p id="ui-subtitle">Paina aloittaaksesi / Tap to Start</p>
+        <button id="btn-start" class="btn-primary">Aloita peli</button>
+        <div id="ui-instructions" class="instructions">
+          <p><strong>Ohjaus:</strong> Nuolinäppäimet / WASD tai kosketusnäyttö</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- On-screen Mobile Controls (Visible on touch devices) -->
+    <div id="touch-controls" class="touch-controls hidden">
+      <div class="touch-dpad">
+        <button class="touch-btn" data-key="ArrowUp" id="touch-up">▲</button>
+        <div class="touch-dpad-row">
+          <button class="touch-btn" data-key="ArrowLeft" id="touch-left">◀</button>
+          <button class="touch-btn" data-key="ArrowDown" id="touch-down">▼</button>
+          <button class="touch-btn" data-key="ArrowRight" id="touch-right">▶</button>
+        </div>
+      </div>
+      <div class="touch-actions">
+        <button class="touch-btn touch-action-btn" data-key="Space" id="touch-action-a">A</button>
+        <button class="touch-btn touch-action-btn" data-key="KeyZ" id="touch-action-b">B</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>
