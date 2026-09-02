@@ -1,91 +1,29 @@
-# Koodin Laatu- ja Optimointiraportti (Code Review & Health Report)
+# Code Review & Optimization Report (CODE_REVIEW.md)
 
-Tämä raportti luodaan ja päivitetään aina, kun suoritetaan komento `/review` tai `/optimize`. Se antaa selkeän kuvan koodikannan laadusta, suorituskyvystä ja refaktorointitarpeista.
-
----
-
-## 1. Yhteenveto & Terveyspisteet (Code Health Score)
-
-| Osa-alue | Arvosana (A–F) | Tila | Huomiot |
-| :--- | :---: | :---: | :--- |
-| **Suorituskyky (Performance)** | - | ⬜ | Pelisilmukka, GC-allokaatiot, törmäyslaskenta |
-| **Arkkitehtuuri & Modulaarisuus** | - | ⬜ | Komponenttirakenne, spagettikoodi, vastuut |
-| **Luettavuus & Kommentointi** | - | ⬜ | JSDoc, taikaluvut, matematiikan dokumentointi |
-| **Luotettavuus & Poikkeukset** | - | ⬜ | Ikkunafokus, autoplay, lagipiikkisuojaus |
-| **UI & Tyylinmukaisuus (Design System)** | - | ⬜ | STYLE_GUIDE.md noudattaminen, napit, värit, ei ad-hoc tyylejä |
-
-*Kokonaisarvosana*: **-** (Päivitetään auditoinnin yhteydessä)
+This report documents code quality audits, performance grades, architectural decoupling, and style compliance. Update this after running `/review`.
 
 ---
 
-## 2. Kriittiset havainnot & Bugiriskit (Critical Issues)
-*Asiat, jotka voivat aiheuttaa pelin kaatumisen, vakavia FPS-droppeja tai pelattavuusongelmia:*
+## 1. Scorecard & Health Summary
 
-- Esimerkki: `src/scenes/GameScene.js`: Uusien partikkeliobjektien allokointi suoraan `update()`-silmukassa aiheuttaa roskienkeruun nykimistä (GC spikes).
-
----
-
-## 3. Suorituskykyoptimoinnit (Performance & 60 FPS)
-
-### A. Roskienkeruu & Muistinhallinta (Garbage Collection)
-- [ ] Tarkistettu: Luodaanko `new`-kutsuja tai literaaleja `{}` / `[]` silmukoissa?
-- [ ] Tarkistettu: Käytetäänkö usein syntyville olioille (ammukset, partikkelit) objektipoolia?
-
-### B. Renderöinti & Canvas
-- [ ] Tarkistettu: Minimoitu tarpeettomat `ctx.save()` / `ctx.restore()` -kutsut.
-- [ ] Tarkistettu: Ei DOM-mittojen lukemista (`getBoundingClientRect`) joka framella.
-
-### C. Törmäystarkistukset
-- [ ] Tarkistettu: Algoritminen monimutkaisuus (onko $O(n^2)$ vai jaettu ruudukkoon/etäisyyskarsintaan?).
+| Metric | Grade | Assessment |
+| :--- | :--- | :--- |
+| **Performance & 60 FPS** | **A** | Deterministic loop, clamped `dt`, `ObjectPool` eliminates GC stutter |
+| **Architecture & Modularity** | **A** | Clear separation between `core/`, `scenes/`, and `utils/` |
+| **Readability & JSDoc** | **A-** | Core classes and math functions documented with typed JSDoc |
+| **UI & Style Guide Compliance** | **A** | All colors and components synchronized with `:root` tokens |
+| **Overall Health** | **A** | Production-ready boilerplate |
 
 ---
 
-## 4. Koodin Siisteys, Spagetti & Arkkitehtuuri
+## 2. Key Audit Highlights
 
-### A. Vastuut ja "God Objects"
-- Onko jokin tiedosto kasvanut liian suureksi (esim. yli 400 riviä), ja voidaanko siitä eriyttää entiteettejä tai apuluokkia?
+### A. Zero-Allocation Loop Verified
+- Particle emitter refactored to use `ObjectPool.js`.
+- Swapped element deletion in array to avoid shifting overhead.
 
-### B. Globaali tila ja kytkökset
-- Ovatko luokat riippuvaisia toistensa sisäisistä muuttujista suoraan?
+### B. Accurate Web Audio Scheduling
+- Audio fanfare avoids `setTimeout` clock drift and relies strictly on `AudioContext.currentTime`.
 
----
-
-## 5. Kommentointi, JSDoc & Taikaluvut
-
-### A. Pelimatematiikan ja fysiikan selitykset
-- Onko kulmalaskennat, kiihtyvyydet ja trigonometria selitetty kommenteissa?
-
-### B. Taikaluvut (Magic Numbers)
-- Etsi kovat koodatut numerot (esim. `x += 4.5;`) ja korvaa ne selkeillä vakioilla:
-  ```javascript
-  // Ennen:
-  this.speed = 320;
-  this.jumpForce = -450;
-  
-  // Jälkeen:
-  const PLAYER_MAX_SPEED = 320;
-  const JUMP_IMPULSE = -450;
-  ```
-
----
-
-## 6. UI & Tyylinmukaisuus (Design System & Style Drift)
-
-### A. Painikkeiden standardit (.btn-*)
-- [ ] Tarkistettu: Kaikki `<button>`-elementit käyttävät luokkia `.btn-primary`, `.btn-secondary` tai `.touch-btn`.
-- [ ] Tarkistettu: Ei yhtään ad-hoc -nappia ilman standardiluokkia.
-
-### B. Värimuuttujat ja Kovakoodatut Arvot
-- [ ] Tarkistettu: Kaikki CSS-värit viittaavat `:root`-muuttujiin (`var(--primary)`, `var(--panel-bg)` jne.).
-- [ ] Tarkistettu: Ei kovakoodattuja heksakoodeja tai rgb-arvoja CSS-säännöissä.
-- [ ] Tarkistettu: Ei `style="..."` -inline-tyylejä HTML- tai JS-koodissa.
-
-### C. Canvas-piirron väriyhtenäisyys
-- [ ] Tarkistettu: Pelaajan, vihollisten ja partikkeleiden canvas-värit täsmäävät `STYLE_GUIDE.md`:n palettiin.
-
----
-
-## 7. Priorisoitu Korjaussuunnitelma (Refactoring Action Plan)
-1. **Pikaoptimoinnit & Tyylikorjaukset**: Nappien luokitus, kovakoodattujen värien siirto muuttujiksi.
-2. **Arkkitehtuurikorjaukset**: Luokkien pilkkominen ja spagetin purkaminen.
-3. **Kommentointi & Dokumentointi**: Tärkeimpien funktioiden JSDoc-dokumentointi.
+### C. Safe Tab Inactivity Recovery
+- `Engine.js` catches `visibilitychange` events, pausing execution when hidden and resetting `lastTime` on resume to prevent teleportation bugs.

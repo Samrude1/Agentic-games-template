@@ -1,55 +1,55 @@
 ---
 name: game-deploy
 description: >-
-  Paketoi ja valmistelee pelin jakelua varten (PWA, itch.io, GitHub Pages).
-  Käytä tätä taitoa aina, kun käyttäjä haluaa julkaista pelin, paketoida sen jakeluun,
-  tehdä siitä offline-pelattavan PWA:n tai ajaa komennon /build, /deploy tai /export.
+  Packages and prepares the game for distribution (PWA, itch.io, GitHub Pages).
+  Use this skill whenever the user wants to publish, package builds,
+  make an offline PWA, or runs /build, /deploy, or /export.
 ---
 
 # Game Deploy & Packaging Skill
 
-Tämä taito ohjaa agenttia valmistelemaan HTML5 Canvas -pelin jakelua ja julkaisua varten. Se varmistaa, että peli toimii itsenäisesti ilman ulkoisia palvelinriippuvuuksia, on asennettavissa mobiililaitteille (PWA) ja on valmis ladattavaksi esimerkiksi **itch.io**- tai **GitHub Pages** -alustoille.
+This skill guides the agent in packaging and optimizing an HTML5 Canvas game for distribution. It ensures the build runs self-contained without server-side dependencies, supports mobile PWA installation, and is ready for upload to **itch.io** or **GitHub Pages**.
 
 ---
 
-## Julkaisuvalmistelun Työnkulku
+## Deployment Workflow
 
-### Vaihe 1: Tuotantovalmiuden tarkistuslista (Production Audit)
-1. **Suhteelliset polut (Relative Paths)**:
-   - Varmista, että kaikki importit ja resurssiviittaukset (`src/main.js`, `style.css`, äänitiedostot, kuvat) käyttävät suhteellisia polkuja (`./style.css`), jotta peli toimii missä tahansa alihakemistossa (kuten `github.io/pelinnimi/`).
-2. **Koodin siisteys**:
-   - Poista tai karsi ylimääräiset testauslokit (`console.log`).
-   - Varmista, että `showFps` on oletuksena pois päältä tuotannossa.
-3. **SEO & Metadata**:
-   - Varmista `<title>`, `<meta name="description">` ja OpenGraph-jakokortit (`og:title`, `og:image`) tiedostossa `index.html`.
+### Step 1: Production Readiness Audit
+1. **Relative Paths**:
+   - Verify all script imports, asset references, and stylesheets use relative paths (`./style.css`), enabling execution in any subpath (e.g., `username.github.io/my-game/`).
+2. **Code Cleanliness**:
+   - Strip verbose debug `console.log` statements.
+   - Ensure `showFps` is disabled by default for production builds.
+3. **SEO & Social Sharing Metadata**:
+   - Validate `<title>`, `<meta name="description">`, and OpenGraph social share tags (`og:title`, `og:image`, `og:description`) in `index.html`.
 
 ---
 
-### Vaihe 2: PWA-tuki (Progressive Web App / Offline Play)
-Jos peliä halutaan pelata mobiilissa kuin natiivisovellusta:
+### Step 2: Progressive Web App (PWA) Offline Support
+If mobile installation or offline play is targeted:
 1. **`manifest.json`**:
-   - Nimi, lyhytnimi, `start_url: "./index.html"`, `display: "standalone"`, `orientation: "landscape"` (tai portrait), teemavärit.
+   - Name, short_name, `start_url: "./index.html"`, `display: "standalone"`, `orientation: "landscape"` (or portrait), theme color tokens.
 2. **Service Worker (`sw.js`)**:
-   - Kevyt välimuistitallennus (Cache First), joka tallentaa `index.html`, `style.css` ja `src/`-koodit offline-käyttöä varten.
-3. **Rekisteröinti**:
-   - Varmista rekisteröintilogiikka `src/main.js`:n alussa.
+   - Lightweight cache-first strategy caching `index.html`, `style.css`, and core `src/` modules for offline play.
+3. **Registration**:
+   - Service worker registration call in `src/main.js`.
 
 ---
 
-### Vaihe 3: Alustakohtainen paketointi
+### Step 3: Platform Packaging
 
-#### A. itch.io ZIP -jakelu:
-- Kaikki tiedostot pakataan ZIP-arkiston juureen (`index.html` suoraan juuritasolla, ei ylimääräisiä kansiokerroksia).
-- Suositellut asetukset itch.io-sivulle:
+#### A. itch.io ZIP Package
+- Archive files directly at the root of the ZIP (`index.html` at the zip root, no nested top-level folder).
+- Recommended itch.io project settings:
   - *Kind of project*: HTML
-  - *Viewport dimensions*: Sama kuin `virtualWidth` x `virtualHeight` (esim. 960 x 540).
-  - *Mobile friendly*: Kyllä.
+  - *Viewport dimensions*: Match internal virtual resolution (e.g., 960 x 540).
+  - *Mobile friendly*: Enabled.
 
-#### B. GitHub Pages -julkaisu:
-- Valmistele tiedostot `main`- tai `gh-pages` -haaraan.
-- Anna käyttäjälle suorat 2-vaiheiset aktivointiohjeet GitHubin asetuksista (*Settings -> Pages*).
+#### B. GitHub Pages Release
+- Prepare files for `main` or `gh-pages` branch.
+- Provide simple 2-step activation instructions (*Repository Settings -> Pages -> Deploy from branch*).
 
 ---
 
-### Vaihe 4: Julkaisuraportti kehittäjälle
-Anna kehittäjälle valmis kuvaus tuotantopaketista, luoduista tiedostoista ja suorista lataus-/käyttöohjeista.
+### Step 4: Release Report for Developer
+Deliver a concise summary with build details, manifest structure, and direct platform upload instructions.

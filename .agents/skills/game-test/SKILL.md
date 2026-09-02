@@ -1,67 +1,67 @@
 ---
 name: game-test
 description: >-
-  Suorittaa pelin automatisoidun testauksen ja laadunvarmistuksen selaimessa.
-  Käytä tätä taitoa aina, kun käyttäjä pyytää testaamaan pelin toimivuuden,
-  ajaa /test tai /playtest -komennon tai tehtyjen muutosten jälkeen halutaan varmistaa ettei mikään hajonnut.
+  Performs automated browser playtesting and quality verification.
+  Use this skill whenever the user requests testing, runs /test or /playtest,
+  or after modifying code to verify nothing broke.
 ---
 
 # Game Test & Automated Playtesting Skill
 
-Tämä taito ohjaa agenttia suorittamaan pelin kattavan automatisoidun testauksen selaimessa. Yksin kehittäessä tämä on kehittäjän "toinen silmäpari", joka estää koodin rikkoutumisen huomaamatta.
+This skill guides the agent in running automated headless/browser tests for an HTML5 Canvas / JavaScript game. In solo development, this functions as the developer's automated QA tester, catching regressions immediately.
 
 ---
 
-## Testauksen Työnkulku
+## Playtesting Workflow
 
-### Vaihe 1: Peliympäristön käynnistys
-1. Tarkista, onko projektissa dev-serveriä tai käynnistä tarvittaessa kevyt paikallinen palvelin (esim. `npx serve .` tai vastaava), tai avaa suoraan `index.html`.
-2. Käynnistä `browser_subagent` suorittamaan varsinainen pelisession testaus.
-
----
-
-### Vaihe 2: Selaimen tarkistuslista (Browser Subagent Checklist)
-
-Pyydä subagenttia suorittamaan seuraavat vaiheet ja raportoimaan tulokset:
-
-1. **Konsolivirheet (Console Errors)**:
-   - Onko JavaScript-syntaksivirheitä, puuttuvia moduuli-importteja tai käsittelemättömiä poikkeuksia (`Uncaught TypeError`, `404 Not Found`)?
-2. **Käynnistys ja Canvas-renderöinti**:
-   - Latautuuko peli ilman mustaa ruutua?
-   - Onko aloitusnäyttö (Start Screen overlay) näkyvissä?
-   - Onko Canvas-elementin leveys ja korkeus alustettu oikein?
-3. **Interaktio ja Aloitus**:
-   - Klikkaa aloituspainiketta (`#btn-start`) tai simuloi välilyönnin painallusta.
-   - Varmistu, että overlay piiloutuu ja peli siirtyy aktiiviseen pelitilaan (`GameScene`).
-4. **Pelisilmukka & Suorituskyky**:
-   - Tarkkaile FPS-lukemaa: pysyykö vakaana (~60 FPS)?
-   - Onko havaittavissa lagipiikkejä tai nykimistä?
-5. **Äänijärjestelmän tila**:
-   - Tarkista selaimen audiokontekstin tila: siirtyikö `AudioContext` käyttäjäklikkauksen jälkeen tilaan `running` (selaimen autoplay-politiikka)?
-6. **Kuvakaappauksen taltiointi**:
-   - Ota ruutukaappaus aktiivisesta pelistä raporttia varten.
+### Step 1: Environment Initialization
+1. Ensure a local dev server or static file host is serving `index.html`.
+2. Launch `browser_subagent` to perform the automated test session.
 
 ---
 
-### Vaihe 3: Testausraportti kehittäjälle (Playtest Report)
+### Step 2: Browser Subagent Verification Checklist
 
-Esitä käyttäjälle selkeä ja tiivis yhteenveto:
+Instruct the subagent to complete the following checks:
+
+1. **Console Errors**:
+   - Check for unhandled exceptions (`Uncaught TypeError`, `ReferenceError`, `404 Not Found`).
+2. **Boot & Canvas Rendering**:
+   - Verify game loads without a blank/black screen.
+   - Verify UI overlay (Start Screen) displays properly.
+   - Verify Canvas dimensions and aspect ratio match configuration.
+3. **Interaction & State Transition**:
+   - Trigger start button click (`#btn-start`) or simulate Space key.
+   - Verify overlay hides and active gameplay state initializes (`GameScene`).
+4. **Game Loop & Framerate**:
+   - Monitor FPS stability (~60 FPS target).
+   - Check for lag spikes or micro-stutter.
+5. **Audio Context**:
+   - Verify `AudioContext` transitions to `'running'` upon user interaction.
+6. **Visual Screenshot**:
+   - Capture a screenshot of active gameplay for the test report.
+
+---
+
+### Step 3: Playtest Report for Developer
+
+Present a concise summary:
 
 ```markdown
-## 🧪 Pelitestauksen Tulokset (Playtest Report)
+## 🧪 Playtest Verification Report
 
-### Yleiskatsaus
-- **Tila**: ✅ HYVÄKSYTTY / ❌ VIRHEITÄ HAVAITTU
-- **FPS**: ~[60] FPS (Vakaa / Heilahteleva)
-- **Konsolivirheet**: [0 kpl / Virheiden määrä ja seloste]
-- **Äänijärjestelmä**: [Toimii / Autoplay estetty]
+### Overview
+- **Status**: ✅ PASSED / ❌ ISSUES DETECTED
+- **Framerate**: ~[60] FPS (Stable / Fluctuating)
+- **Console Errors**: [0 found / error count & snippets]
+- **Audio System**: [Active / Blocked by autoplay]
 
-### Havainnot
-- [Havainto 1: Aloitusnäyttö ja skenen vaihto toimii virheettömästi]
-- [Havainto 2: Pelaaja reagoi syötteisiin ja partikkelit piirtyvät]
+### Observations
+- [Observation 1: Start menu and scene transition cleanly]
+- [Observation 2: Entities update and particles render without errors]
 
-### Visuaalinen tila
-[Liitä kuvakaappaus pelitilanteesta]
+### Visual State
+[Screenshot attachment]
 ```
 
-Jos testissä havaittiin virheitä, ehdota suoraan korjaustoimenpidettä tai komentoa `/debug`.
+If errors are detected, propose immediate resolution or transition to `/debug`.

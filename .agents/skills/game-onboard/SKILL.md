@@ -1,86 +1,80 @@
 ---
 name: game-onboard
 description: >-
-  Kartoittaa ja auditoi olemassa olevan tai keskeneräisen HTML/CSS/JS -peliprojektin.
-  Käytä tätä taitoa aina, kun käyttäjä pyytää hyppäämään mukaan kesken olevaan projektiin,
-  auditoimaan koodin, ottamaan projektin haltuun tai ajaa /onboard tai /audit -komennon.
-  Luo koko projektin tilannekuvan ja blueprint-dokumentaation (.agents/blueprint/).
+  Audits and reverse-engineers an existing or legacy HTML/CSS/JS game project.
+  Use this skill whenever the user asks to onboard an existing codebase, audit code,
+  take over a project, or runs /onboard or /audit.
+  Generates a full project status and blueprint (.agents/blueprint/).
 ---
 
-# Game Onboarding & Audit Skill
+# Game Onboarding & Codebase Audit Skill
 
-Tämä taito ohjaa agenttia hyppäämään mukaan olemassa olevaan, keskeneräiseen tai refaktoroitavaan peliprojektiin ammattimaisella otteella. Sen tavoitteena on selvittää projektin nykytila, luoda kattava dokumentaatio (.agents/blueprint/) ja laatia selkeä toimintasuunnitelma ennen koodimuutoksia.
-
----
-
-## Työnkulun vaiheet
-
-### Vaihe 1: Koodikannan syväkartoitus (Deep Codebase Audit)
-
-Käy läpi projektin nykyiset tiedostot työkalujen (`list_dir`, `view_file`, `grep_search`) avulla:
-
-1. **HTML & Rakenne**:
-   - Tarkista `index.html`: Miten Canvas on alustettu? Onko viewport-meta mobiilioptimoitu? Onko DOM-pohjaisia overlay-valikoita tai HUDia?
-2. **Pelisilmukka & Ajoitus**:
-   - Etsi pääsilmukka (`requestAnimationFrame`, `setInterval` tai `setTimeout`).
-   - Tarkista, käyttääkö peli **delta-timea (`dt`)** vai onko liikenopeus sidottu suoraan näyttölaitteen virkistystaajuuteen (Hz)?
-   - Onko delta-time suojattu lagipiikeiltä (`Math.min(dt, maxDt)`)?
-3. **Koodirakenne & Modulaarisuus**:
-   - Onko koodi yhdessä jättitiedostossa vai jaettu loogisiin moduuleihin (ES Modules)?
-   - Onko koodissa vaarallisia globaaleja muuttujia (`window.x`, `var`)?
-   - Miten pelitiloja (Menu, Game, GameOver) hallitaan? Onko käytössä tilakone?
-4. **Responsiivisuus & Skaalaus**:
-   - Onko Canvas kiinteän kokoinen (esim. 800x600) vai skaalautuuko se eri ruuduille säilyttäen kuvasuhteen?
-   - Miten hiiri- ja kosketuskoordinaatit skaalataan Canvasin sisäiseen koordinaatistoon?
-5. **Syötteet (Inputs)**:
-   - Mitä ohjaustapoja tuetaan (näppäimistö, hiiri, kosketusnäyttö)?
-   - Onko mobiilipelaajille virtuaalisia kontrolleja?
-6. **Äänet & Tehosteet**:
-   - Onko ääniä toteutettu? Käytetäänkö Web Audio APIa vai HTML5 `<audio>` -elementtejä?
-   - Ovatko osumat ja tapahtumat "mehukkaita" (screen shake, partikkelit, välähdykset)?
+This skill guides the agent in systematically taking over an existing, unfinished, or legacy game project. Its objective is to evaluate the codebase, create persistent blueprint documentation (`.agents/blueprint/`), and establish an actionable roadmap before any modifications are made.
 
 ---
 
-### Vaihe 2: Blueprint-dokumentaation generointi (.agents/blueprint/)
+## Workflow Steps
 
-Kun koodi on analysoitu, luo tai päivitä projektin pysyvä dokumentaatio kansioon `.agents/blueprint/`:
+### Step 1: Deep Codebase Audit
+Examine all project files using exploration tools (`list_dir`, `view_file`, `grep_search`):
 
-1. **`.agents/blueprint/GDD.md`**:
-   - Dokumentoi koodista havaitut mekaniikat, pelaajahahmo, viholliset, säännöt, ohjaukset ja tavoite.
-2. **`.agents/blueprint/ARCHITECTURE.md`**:
-   - Piirrä nykyisen koodin arkkitehtuurikaavio (Mermaid).
-   - Listaa tiedostojen nykyiset vastuut ja mahdolliset refaktorointitarpeet.
+1. **HTML & DOM Structure**:
+   - Check `index.html`: Canvas initialization, viewport meta tags, UI overlays, HUD elements.
+2. **Game Loop & Timing**:
+   - Find the main loop (`requestAnimationFrame`, `setInterval`).
+   - Check whether movement relies on **delta-time (`dt`)** or is tied to screen refresh rate (Hz).
+   - Verify if delta-time is clamped against lag spikes (`Math.min(dt, maxDt)`).
+3. **Architecture & Modularity**:
+   - Is code isolated into ES Modules or dumped into a monolithic script?
+   - Are there hazardous global variables (`window.x`, `var`)?
+   - How are states handled (Menu, Game, GameOver)? Is there a scene/state machine?
+4. **Responsiveness & Aspect Ratio**:
+   - Is the canvas fixed or does it scale while maintaining aspect ratio?
+   - How are mouse and touch coordinates mapped to virtual canvas space?
+5. **Input Handling**:
+   - Which input methods are implemented (Keyboard, Mouse, Touch)?
+   - Are virtual touch controls available for mobile?
+6. **Audio & Juice**:
+   - How are sound effects implemented (Web Audio API vs HTML5 `<audio>`)?
+   - Are impacts and events enhanced with screen shake, particle effects, or flashes?
+
+---
+
+## Step 2: Generate Blueprint Documentation (.agents/blueprint/)
+Synthesize findings into persistent blueprint files:
+
+1. **`.agents/blueprint/GDD.md`**: Reverse-engineered design document (core loop, controls, mechanics, rules).
+2. **`.agents/blueprint/ARCHITECTURE.md`**: Technical architecture diagram (Mermaid), file responsibilities, and refactoring needs.
 3. **`.agents/blueprint/PROJECT_STATUS.md`**:
-   - Arvioi projektin valmiusaste (0–100%).
-   - Täytä **Ominaisuusmatriisi (Feature Matrix)** (mikä on valmista, mikä kesken, mikä puuttuu).
-   - Listaa **Tekninen velka ja havaitut riskit** (esim. puuttuva delta-time, muistivuodot, kosketusohjauksen puute).
-   - Laadi **Priorisoitu toimintasuunnitelma (Action Plan)** seuraaville sprinteille.
+   - Estimated completion percentage (0–100%).
+   - Feature Matrix (Done, In Progress, Missing).
+   - Technical Debt and identified risks.
+   - Prioritized Action Plan for upcoming sprints.
 
 ---
 
-### Vaihe 3: Johdon yhteenveto kehittäjälle ("Lentotarkastus")
-
-Esitä käyttäjälle tiivis ja selkeä raportti auditoinnin tuloksista:
+## Step 3: Executive Debrief to Developer
+Deliver a concise executive debrief:
 
 ```markdown
-## 🕹️ Projektin Kartoitusraportti (Onboarding Audit)
+## 🕹️ Project Onboarding & Audit Report
 
-### 1. Tilannekuva & Pelikonsepti
-- **Peli**: [Pelin tyyppi ja genre]
-- **Valmiusaste**: [Arvioitu %]
-- **Havainto**: [1-2 lauseen kiteytys projektin nykytilasta]
+### 1. Executive Summary
+- **Game**: [Game genre and type]
+- **Completion**: [Estimated %]
+- **Current State**: [1-2 sentence high-level summary]
 
-### 2. Mikä toimii hyvin (The Good)
-- [Positiiviset havainnot koodista]
+### 2. What Works Well (The Good)
+- [Positive architectural strengths]
 
-### 3. Havaitut puutteet & Tekninen velka (Areas for Improvement)
-- [Kriittiset huomiot, esim. puuttuva delta-time, kova koodattu resoluutio, puuttuvat äänet]
+### 3. Technical Debt & Risks (Areas for Improvement)
+- [Critical issues: missing delta-time, hardcoded resolutions, unhandled memory]
 
-### 4. Ehdotettu toimintasuunnitelma (Next Steps)
-1. [Ensimmäinen looginen korjaus / ominaisuus]
-2. [Seuraava askel]
+### 4. Proposed Action Plan (Next Steps)
+1. [First logical fix or feature]
+2. [Second step]
 
-Kaikki havainnot on tallennettu projektin blueprint-kansioon: `.agents/blueprint/`.
+Full blueprint saved to: `.agents/blueprint/`.
 ```
 
-Kysy lopuksi käyttäjän vahvistusta: *"Haluatko aloittaa suoraan vaiheesta 1 (esim. pelisilmukan korjaus / uuden ominaisuuden toteutus)?"*
+Conclude by asking developer confirmation: *"Would you like me to start with step 1?"*

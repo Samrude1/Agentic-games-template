@@ -1,25 +1,25 @@
 /**
  * math.js
- * Pelimatematiikan ja fysiikan optimoidut apufunktiot.
+ * Optimized 2D game math and physics calculation helpers.
  */
 
 /**
- * Rajaa arvon annettujen minimi- ja maksimiarvojen väliin.
+ * Clamps a numeric value between min and max bounds.
  */
 export function clamp(val, min, max) {
   return Math.max(min, Math.min(max, val));
 }
 
 /**
- * Lineaarinen interpolaatio kahden luvun välillä.
+ * Linear interpolation between two values.
  */
 export function lerp(start, end, t) {
   return start + (end - start) * t;
 }
 
 /**
- * Kahden pisteen välinen etäisyys toiseen potenssiin (Fast Distance Check).
- * Vältä Math.sqrt -kutsuja aina kun pelkkä etäisyysvertailu riittää!
+ * Squared distance between two 2D points (Fast distance comparison).
+ * Avoids costly Math.sqrt calls whenever threshold comparison is sufficient.
  */
 export function distanceSq(x1, y1, x2, y2) {
   const dx = x2 - x1;
@@ -28,49 +28,49 @@ export function distanceSq(x1, y1, x2, y2) {
 }
 
 /**
- * Kahden pisteen välinen todellinen etäisyys.
+ * Euclidean distance between two 2D points.
  */
 export function distance(x1, y1, x2, y2) {
   return Math.hypot(x2 - x1, y2 - y1);
 }
 
 /**
- * Satunnainen liukuluku väliltä [min, max).
+ * Generates a random float in range [min, max).
  */
 export function randomRange(min, max) {
   return min + Math.random() * (max - min);
 }
 
 /**
- * Satunnainen kokonaisluku väliltä [min, max].
+ * Generates a random integer in range [min, max].
  */
 export function randomInt(min, max) {
   return Math.floor(min + Math.random() * (max - min + 1));
 }
 
 /**
- * Kahden pisteen välinen kulma radiaaneina.
+ * Angle in radians between two 2D points.
  */
 export function angleBetween(x1, y1, x2, y2) {
   return Math.atan2(y2 - y1, x2 - x1);
 }
 
 /**
- * Muuntaa asteet radiaaneiksi.
+ * Converts degrees to radians.
  */
 export function degToRad(deg) {
   return deg * (Math.PI / 180);
 }
 
 /**
- * Muuntaa radiaanit asteiksi.
+ * Converts radians to degrees.
  */
 export function radToDeg(rad) {
   return rad * (180 / Math.PI);
 }
 
 /**
- * Normalisoi 2D-vektorin suunnan yksikköpituiseksi (pituus 1).
+ * Normalizes a 2D vector to unit length (length = 1).
  */
 export function normalize(x, y) {
   const len = Math.hypot(x, y);

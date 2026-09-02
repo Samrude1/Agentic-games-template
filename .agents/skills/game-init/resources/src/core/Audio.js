@@ -1,7 +1,7 @@
 /**
  * Audio.js
- * Proseduraalinen Web Audio API -ääniefektigeneraattori.
- * Toimii 100% koodipohjaisesti ilman ulkoisia mp3/wav-tiedostoja.
+ * Procedural Web Audio API sound effect generator.
+ * Operates 100% via code synthesis with zero external mp3/wav files.
  */
 export class SoundManager {
   constructor() {
@@ -12,7 +12,7 @@ export class SoundManager {
   }
 
   /**
-   * Alustaa AudioContextin ensimmäisen käyttäjäinteraktion yhteydessä.
+   * Initializes or resumes the AudioContext upon user gesture.
    */
   init() {
     if (this.ctx) {
@@ -24,7 +24,7 @@ export class SoundManager {
 
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;
     if (!AudioContextClass) {
-      console.warn('Web Audio API ei ole tuettu tässä selaimessa.');
+      console.warn('Web Audio API is not supported in this browser.');
       return;
     }
 
@@ -50,7 +50,7 @@ export class SoundManager {
   }
 
   /**
-   * Pelaajan hyppyääni (nouseva taajuus)
+   * Player jump sound effect (ascending frequency ramp)
    */
   playJump() {
     if (this.isMuted) return;
@@ -76,7 +76,7 @@ export class SoundManager {
   }
 
   /**
-   * Ammusääni / Laser
+   * Projectile / laser sound effect
    */
   playShoot() {
     if (this.isMuted) return;
@@ -102,7 +102,7 @@ export class SoundManager {
   }
 
   /**
-   * Kolikko / Pisteääni (arpeggio)
+   * Coin / item pickup arpeggio
    */
   playCoin() {
     if (this.isMuted) return;
@@ -132,7 +132,7 @@ export class SoundManager {
   }
 
   /**
-   * Osuma / Vahinko
+   * Impact / damage sound effect
    */
   playHit() {
     if (this.isMuted) return;
@@ -158,7 +158,7 @@ export class SoundManager {
   }
 
   /**
-   * Räjähdys (kohinapohjainen emulaatio)
+   * Explosion (filtered white noise emulation)
    */
   playExplosion() {
     if (this.isMuted) return;
@@ -177,7 +177,7 @@ export class SoundManager {
     const noise = this.ctx.createBufferSource();
     noise.buffer = buffer;
 
-    // Alipäästösuodatin pehmentää räjähdystä
+    // Lowpass filter softens harsh noise frequencies
     const filter = this.ctx.createBiquadFilter();
     filter.type = 'lowpass';
     filter.frequency.setValueAtTime(800, now);
@@ -195,7 +195,7 @@ export class SoundManager {
   }
 
   /**
-   * Voittoääni / Fanfaari (aikataulutettu tarkasti Web Audio API:n kellolla)
+   * Victory fanfare (scheduled precisely via AudioContext.currentTime)
    */
   playWin() {
     if (this.isMuted) return;

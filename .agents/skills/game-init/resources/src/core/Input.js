@@ -1,6 +1,6 @@
 /**
  * Input.js
- * Yhtenäinen syötteiden hallinta: näppäimistö, hiiri ja mobiilikosketus (on-screen virtuaalinapit).
+ * Unified input manager: Keyboard, Mouse, and Mobile Touch (virtual D-pad & action buttons).
  */
 export class Input {
   /**
@@ -33,7 +33,7 @@ export class Input {
       }
       this.keys.add(e.code);
 
-      // Estä nuolinäppäinten ja välilyönnin selaimen skrollaus
+      // Prevent arrow keys and space from scrolling the browser window
       if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) {
         e.preventDefault();
       }
@@ -43,7 +43,7 @@ export class Input {
       this.keys.delete(e.code);
     });
 
-    // Tyhjennä näppäimet kun ikkuna menettää fokuksen
+    // Clear key states when window loses focus
     window.addEventListener('blur', () => {
       this.keys.clear();
       this.justPressedKeys.clear();
@@ -72,7 +72,7 @@ export class Input {
       this.mouse.isDown = false;
     });
 
-    // Estä kontekstivalikko canvasilla
+    // Disable default browser context menu on canvas
     canvas.addEventListener('contextmenu', (e) => e.preventDefault());
   }
 
@@ -109,21 +109,21 @@ export class Input {
   }
 
   /**
-   * Tarkistaa onko näppäin pohjassa (esim. 'ArrowUp', 'KeyW', 'Space')
+   * Checks if a key is currently held down (e.g., 'ArrowUp', 'KeyW', 'Space')
    */
   isKeyDown(code) {
     return this.keys.has(code);
   }
 
   /**
-   * Tarkistaa onko näppäintä painettu juuri tällä framella
+   * Checks if a key was pressed on this exact frame
    */
   isKeyJustPressed(code) {
     return this.justPressedKeys.has(code);
   }
 
   /**
-   * Kutsu tämän metodin suoritusta jokaisen framen lopussa (nollaa kertapainallukset)
+   * Call at the end of each frame to reset single-frame press states
    */
   postUpdate() {
     this.justPressedKeys.clear();

@@ -1,53 +1,53 @@
-# AGENTS.md – Pelinkehityksen Agenttiohjeistus (Gameworkflow02)
+# AGENTS.md – Game Development Agent Guidelines (Solo Dev Kit)
 
-Tämä repository on **HTML5 Canvas / Vanilla JS** -pelinkehityksen ammattimainen työpohja (Game Dev Kit), joka on optimoitu **yhden hengen kehittäjän ja AI-agentin saumattomaan yhteistyöhön**.
-
----
-
-## 🎯 Toimintaperiaatteet Agentille
-
-1. **Yksi totuuden lähde (Single Source of Truth)**:
-   - Kaikki pysyvä tieto pelistä, arkkitehtuurista, tilasta ja tyyleistä asuu kansiossa `.agents/blueprint/`.
-   - Älä koskaan tee oletuksia pelin mekaniikoista tarkistamatta tiedostoa `.agents/blueprint/GDD.md`.
-   - Kaikkien UI-elementtien ja värien on noudatettava tiedostoa `.agents/blueprint/STYLE_GUIDE.md`.
-2. **Koodaustandardit**:
-   - Noudata aina sääntötiedostoa `.agents/rules/game-dev.md`.
-   - Deterministinen 60 FPS pelisilmukka suojatulla `dt`:llä (`Math.min(dt, 0.1)`).
-   - Nolla GC-kuormaa silmukassa: käytä aina `ObjectPool.js` -luokkaa partikkeleille, ammuksille ja usein luotaville olioille.
-   - Puhdas Vanilla JavaScript (ES Modules), ei turhia ulkoisia riippuvuuksia.
-3. **Kontekstin ja muistin hallinta**:
-   - Istunnot ovat lyhyitä ja fokusoituja.
-   - Kun käyttäjä haluaa lopettaa, aja `/save` (`game-memory`).
-   - Kun aloitat uuden istunnon, aja `/resume` (`game-memory`) ja lue vain ne 2–4 avaintiedostoa, jotka on listattu `SESSION_STATE.md`:ssä.
+This repository is a professional **HTML5 Canvas / Vanilla JavaScript** game development template and cognitive environment optimized for **seamless collaboration between a solo developer and an AI coding agent**.
 
 ---
 
-## ⚡ Slash-Komennot & Skillit (Komentokartta)
+## 🎯 Core Operating Principles for the Agent
 
-Agentin tulee aktivoida vastaava taito (`.agents/skills/<skill-name>/SKILL.md`), kun käyttäjä käyttää näitä komentoja tai pyytää vastaavaa toimenpidettä:
+1. **Single Source of Truth**:
+   - All persistent project data, architecture, game design, styling tokens, and status reside in `.agents/blueprint/`.
+   - Never make assumptions about game mechanics without checking `.agents/blueprint/GDD.md`.
+   - All UI components, buttons, and colors must strictly adhere to `.agents/blueprint/STYLE_GUIDE.md`.
+2. **Engineering Standards**:
+   - Always follow `.agents/rules/game-dev.md`.
+   - Deterministic 60 FPS game loop with protected `dt` (`Math.min(dt, 0.1)`).
+   - Zero Garbage Collection thrashing in the loop: always use `ObjectPool.js` for particles, projectiles, and frequently instantiated objects.
+   - Clean modern Vanilla JavaScript (ES Modules), zero bloated external dependencies.
+3. **Context and Token Management**:
+   - Keep sessions focused and compact.
+   - When the developer ends the session, execute `/save` (`game-memory`).
+   - When starting a fresh session, execute `/resume` (`game-memory`) and read only the 2–4 key files specified in `SESSION_STATE.md`.
 
-| Komento | Taito (Skill) | Tarkoitus |
+---
+
+## ⚡ Slash Commands & Skills Mapping
+
+The agent must activate the corresponding skill (`.agents/skills/<skill-name>/SKILL.md`) when the user invokes these commands or requests the corresponding task:
+
+| Command | Skill | Purpose |
 | :--- | :--- | :--- |
-| `/init` | `game-init` | Uuden pelin alustus: Grill-Me -haastattelu, GDD & blueprintin luonti, pelirungon pystytys |
-| `/onboard`, `/audit` | `game-onboard` | Olemassa olevan/keskeneräisen koodikannan analysointi ja blueprintin generointi |
-| `/review`, `/optimize` | `game-review` | Koodin laadunvarmistus: GC-analyysi, 60 FPS, spagetin purku ja tyyliauditointi |
-| `/test`, `/playtest` | `game-test` | Automaattinen selaintestaus: konsolivirheet, canvas-piirto, FPS, audio ja kuvakaappaus |
-| `/debug`, `/fix` | `game-debug` | Vikadiagnostiikka: ongelman paikannus, korjausehdotus ja bugilokin kirjaus |
-| `/save`, `/checkpoint` | `game-memory` | Päivän/session päätös: tilanteen, seuraavan tehtävän ja avaintiedostojen tallennus |
-| `/resume`, `/start-session` | `game-memory` | Uuden puhtaan session aloitus: lukee muistin ja antaa heti 3 lauseen tilannekuvan |
-| `/build`, `/deploy` | `game-deploy` | PWA manifest, service worker, itch.io & GitHub Pages jakelupaketointi |
+| `/init` | `game-init` | Initialize new game: *Grill-Me* interview, GDD & blueprint creation, playable scaffold |
+| `/onboard`, `/audit` | `game-onboard` | Audit and reverse-engineer existing codebase, build blueprint |
+| `/review`, `/optimize` | `game-review` | Code quality assurance: GC analysis, 60 FPS, decoupled architecture, style audit |
+| `/test`, `/playtest` | `game-test` | Automated browser playtesting: console errors, canvas draw, 60 FPS, screenshot report |
+| `/debug`, `/fix` | `game-debug` | Systematic diagnostics: root cause analysis, fix proposal, `KNOWN_BUGS.md` logging |
+| `/save`, `/checkpoint` | `game-memory` | Session end: summarize state, define next task, save handoff context |
+| `/resume`, `/start-session` | `game-memory` | Session start: read state and deliver a concise 3-sentence kick-off debrief |
+| `/build`, `/deploy` | `game-deploy` | PWA manifest, service worker, itch.io & GitHub Pages release packaging |
 
 ---
 
-## 🔄 Kehittäjän Päiväjärjestys (Workflow Loop)
+## 🔄 The Solo Developer Loop
 
 ```mermaid
 graph TD
-    A["🌅 Päivän aloitus: /resume"] --> B["🔨 Ominaisuuden kehitys & koodaus"]
-    B --> C["🧪 Validointi selaimessa: /test"]
-    C -- Bugeja havaittu --> D["🐛 Vianetsintä: /debug"]
+    A["🌅 Start Session: /resume"] --> B["🔨 Feature Development & Coding"]
+    B --> C["🧪 Browser Validation: /test"]
+    C -- Bugs detected --> D["🐛 Diagnostics & Fix: /debug"]
     D --> B
-    C -- Toimii virheettömästi --> E["🔍 Laaduntarkastus: /review"]
-    E --> F["🌆 Päivän päätös: /save"]
-    F --> G["🚀 Valmis peli: /build"]
+    C -- Clean pass --> E["🔍 Quality & GC Review: /review"]
+    E --> F["🌆 End Session: /save"]
+    F --> G["🚀 Production Release: /build"]
 ```

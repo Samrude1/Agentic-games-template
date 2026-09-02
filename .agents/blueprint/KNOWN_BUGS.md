@@ -1,20 +1,20 @@
-# Tiedossa olevat Bugit & Viat (KNOWN_BUGS.md)
+# Known & Resolved Bugs (KNOWN_BUGS.md)
 
-Tämä tiedosto pitää kirjaa havaituista, tutkittavista ja korjatuista bugeista osana `/debug` (`game-debug`) -työnkulkua.
+This file logs detected, investigated, and resolved bugs as part of the `/debug` (`game-debug`) diagnostic workflow.
 
 ---
 
-## 🟢 Korjatut ongelmat (Resolved Issues)
+## 🟢 Resolved Issues
 
-| Pvm | Komponentti | Vian kuvaus | Perussyy (Root Cause) | Ratkaisu |
+| Date | Component | Symptom | Root Cause | Resolution |
 | :--- | :--- | :--- | :--- | :--- |
-| 2026-09-02 | `State.js` / `ParticleEmitter` | Partikkelit aiheuttivat GC-kuormaa | Uusien olioiden luonti ja `splice()` pelisilmukassa | Korvattu `ObjectPool`-toteutuksella |
-| 2026-09-02 | `Engine.js` | Lagipiikit taustalle siirryttäessä | Välilehden vaihto aiheutti suuren dt-hypyn | Lisätty `visibilitychange` automaattisella pausetuksella ja aikanollauksella |
-| 2026-09-02 | `Audio.js` | `playWin()` ajoitus epätarkka | Käytti `setTimeout()`-funktiota Web Audion oman kellon sijaan | Korjattu käyttämään `AudioContext.currentTime` -aikataulutusta |
-| 2026-09-02 | `GameScene.js` | Kovakoodatut värit rikkoivat Style Guidea | Värit olivat kiinteitä heksoja koodissa | Synkronoitu lukemaan `:root`-muuttujat `getComputedStyle`:lla |
+| 2026-09-02 | `State.js` / `ParticleEmitter` | GC stutter in game loop | Dynamic object instantiation & `splice()` in loop | Replaced with `ObjectPool` recycling |
+| 2026-09-02 | `Engine.js` | Physics teleportation on tab switch | Tab backgrounding resulted in massive delta-time jump | Added `visibilitychange` auto-pause & clock reset |
+| 2026-09-02 | `Audio.js` | Fanfare notes out of sync | Used inaccurate `setTimeout()` instead of audio clock | Converted to `AudioContext.currentTime` scheduling |
+| 2026-09-02 | `GameScene.js` | Hardcoded colors violated Style Guide | Static hex strings in scene code | Synced with `:root` CSS variables via `getComputedStyle` |
 
 ---
 
-## 🔴 Avoimet havainnot (Open Issues)
+## 🔴 Open Issues
 
-*Ei aktiivisia raportoituja bugeja tällä hetkellä.*
+*No active defects currently registered.*

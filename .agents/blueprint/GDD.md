@@ -1,76 +1,49 @@
-# Game Design Document (GDD)
+# Game Design Document (GDD.md)
 
-Tämä dokumentti on pelin toiminnallinen suunnitelma ja "totuuden lähde" (Single Source of Truth). Kaikki pelimekaniikat, kontrollit ja säännöt määritellään tässä.
-
----
-
-## 1. Yleiskatsaus (Overview)
-- **Pelin nimi**: [Pelin nimi]
-- **Genre**: [esim. Arcade Shooter, Tasoloikka, Roguelite, Pulmapeli]
-- **Alustat**: Desktop (Web) ja Mobiili (Kosketusnäyttö)
-- **Kohdeyleisö & Teema**: [esim. Retro sci-fi neon cyberpunk, nopeatempoinen reflexipeli]
-- **Visuaalinen tyyli**: [esim. Vektori-glow, pixel art, minimalistinen geometrinen]
+This document is the official Game Design specification for the project. Update this file whenever rules, mechanics, entities, or victory conditions change.
 
 ---
 
-## 2. Pääpelisilmukka (Core Loop)
-```
-[Toiminta: Pelaaja liikkuu ja reagoi]
-              ↓
-[Haaste: Viholliset, esteet, aikaraja]
-              ↓
-[Palkinto: Pisteet, power-upit, kombo-kertoimet]
-              ↓
-[Eteneminen tai Game Over & Uusi yritys]
-```
-
-Kuvaile tässä pelaajan toiminnot sekunti-sekunnilta:
-- Mitä pelaaja tekee 90% ajasta?
-- Mikä aiheuttaa pelaajalle haasteen tai uhan?
-- Miten pelaaja palkitaan onnistumisesta?
+## 1. Overview
+- **Game Title**: [Title]
+- **Genre**: [Genre, e.g., 2D Top-Down Shooter / Precision Platformer / Arcade]
+- **Target Platform**: Desktop (Web) & Mobile (Touch)
+- **Tech Stack**: HTML5 Canvas, Modern Vanilla JavaScript (ES Modules), Procedural Web Audio API
+- **Visual Style & Theme**: [e.g., Neon Cyberpunk / Minimalist Vector / Retro Pixel Art]
 
 ---
 
-## 3. Pelaajan ohjaus & Kontrollit (Input Mapping)
-
-### Näppäimistö & Hiiri (Desktop)
-| Toiminto | Näppäin | Selite |
-| :--- | :--- | :--- |
-| Liikkuminen | Nuolinäppäimet / WASD | 4-suuntainen / 8-suuntainen liike |
-| Ensisijainen toiminto (Ammus / Hyppy) | Välilyönti | Päätoiminto |
-| Toissijainen toiminto (Dash / Pommi) | Shift / Z / Hiiren oikea | Erikoistoiminto |
-| Tähtäys | Hiiren osoitin | Virtuaalikoordinaatit |
-| Pause / Valikko | Esc / P | Pelin pysäytys |
-
-### Kosketusohjaus (Mobiili)
-| Toiminto | Kosketuselementti | Selite |
-| :--- | :--- | :--- |
-| Liikkuminen | Virtuaali-D-pad tai pyyhkäisy | Vasen alakulma |
-| Toiminnot | Virtuaalinapit A ja B | Oikea alakulma |
+## 2. Core Gameplay Loop
+1. **Action**: Player maneuvers...
+2. **Challenge**: Avoid obstacles, dodge hazards, destroy targets...
+3. **Reward**: Gain points, collect power-ups, advance difficulty wave...
+4. **Outcome**: High score leaderboard or stage victory.
 
 ---
 
-## 4. Pelimekaniikat ja Säännöt
-
-### Pelaajahahmo / Alus
-- Liikenopeus, kiihtyvyys ja kitka
-- Kestopisteet (HP) tai elämät (Lives)
-- Aseistus, ammukset tai erikoisliikkeet
-
-### Viholliset & Esteet
-- Vihollistyypit ja niiden tekoäly (AI / liikeradat)
-- Spawnauslogiikka (aikapohjainen, aallot, kiihtyvä vaikeustaso)
-- Osumat ja vahingonlaskenta
-
-### Pisteytys & Tavoitteet
-- Miten pisteitä kertyy (vihollisten tuhoaminen, kerätyt esineet, elossaoloaika)
-- Kombojeli ja kertoimet
-- Parhaan tuloksen tallennus (`localStorage`)
+## 3. Controls & Inputs
+- **Keyboard**:
+  - Movement: Arrow Keys / WASD
+  - Primary Action (Shoot / Jump): Space
+  - Secondary Action: Shift / Z
+  - Pause: Escape / P
+- **Touch / Mobile**:
+  - Virtual on-screen D-pad on the left
+  - Action buttons (A / B) on the right
+- **Mouse**: (If crosshair aiming or click-to-move game)
 
 ---
 
-## 5. Äänimaailma (Audio Design)
-Kaikki äänet toteutetaan koodipohjaisella Web Audio API -synteesillä:
-- **Pelaajan toiminnot**: Hyppy, laukaus, dash
-- **Tapahtumat**: Osuma, räjähdys, kolikko/bonus
-- **Pelin tila**: Voittofanfaari, Game Over -ääni, taustasyke/musiikki
+## 4. Visuals & Audio
+- **Resolution**: 960x540 (16:9 widescreen) virtual resolution, responsive aspect-ratio scaling.
+- **Palette**: Synchronized with `STYLE_GUIDE.md`.
+- **Sound Effects**: Procedural Web Audio API (Laser, Jump, Coin, Hit, Explosion, Victory).
+
+---
+
+## 5. Entities & Mechanics
+- **Player**: Velocity, bounds clipping, collision radius, health.
+- **Enemies / Hazards**: Behaviors, spawn timer, collision detection.
+- **Win / Loss Conditions**:
+  - Defeat: Health reaches 0 or timer runs out.
+  - Victory: Wave completed or score threshold met.

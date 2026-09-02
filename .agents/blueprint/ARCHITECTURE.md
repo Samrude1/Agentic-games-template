@@ -1,57 +1,57 @@
-# Tekninen Arkkitehtuuri (Technical Architecture)
+# Technical Architecture (ARCHITECTURE.md)
 
-Tämä dokumentti määrittelee pelin teknisen rakenteen, komponenttijaon, datavirrat ja suorituskykyperiaatteet. Jokaisen kehittäjän ja agentin tulee noudattaa tätä rakennetta.
+This document defines the technical structure, module responsibilities, data flow, and performance standards of the game engine. Every developer and AI agent must adhere to this architecture.
 
 ---
 
-## 1. Järjestelmäarkkitehtuuri & Moduulit
+## 1. System Architecture & Modules
 
 ```mermaid
 graph TD
     A[index.html] --> B[src/main.js - Bootstrap]
-    B --> C[src/core/Engine.js - Pelisilmukka & Skaalaus]
-    B --> D[src/core/Input.js - Näppis, Hiiri, Touch]
-    B --> E[src/core/Audio.js - Web Audio API Synteesi]
-    C --> F[src/core/State.js - Tilakone & Skenehallinta]
-    F --> G[src/scenes/ - Pelitilat]
+    B --> C[src/core/Engine.js - Game Loop & Scaling]
+    B --> D[src/core/Input.js - Keyboard, Mouse, Touch]
+    B --> E[src/core/Audio.js - Procedural Web Audio API]
+    C --> F[src/core/State.js - Scene Machine & Particles]
+    F --> G[src/scenes/ - Game States]
     G --> H[MenuScene]
     G --> I[GameScene]
     G --> J[GameOverScene]
-    I --> K[src/entities/ - Pelaaja, Viholliset, Ammukset]
-    I --> L[src/utils/ - Fysiikka, Törmäykset, Poolit]
+    I --> K[src/entities/ - Player, Enemies, Projectiles]
+    I --> L[src/utils/ - Math, Collision, ObjectPool]
 ```
 
 ---
 
-## 2. Tiedostorakenne ja vastuut
+## 2. Directory Structure & Responsibilities
 
-| Tiedosto / Hakemisto | Vastuualue |
+| File / Directory | Responsibility |
 | :--- | :--- |
-| `index.html` | Canvas-elementti, HUD/UI-overlayt ja mobiilikosketusnapit |
-| `style.css` | Responsiivinen asettelu, kuvasuhteen lukitus, teema ja animaatiot |
-| `src/main.js` | Sovelluksen käynnistys, riippuvuuksien alustus ja alkuskenen lataus |
-| `src/core/Engine.js` | 60 FPS deterministinen pelisilmukka, suojattu delta-time, canvas-skaalaus |
-| `src/core/Input.js` | Yhtenäinen syötekäsittelijä (keyboard, mouse, virtual touch d-pad) |
-| `src/core/Audio.js` | Koodipohjainen Web Audio API -äänisyntetisaattori |
-| `src/core/State.js` | Tilakone (Scene base class) ja partikkelisysteemi |
-| `src/scenes/` | Itsenäiset pelitilat (`enter`, `exit`, `update`, `render`) |
-| `src/entities/` | Peliobjektit, niiden tila, käyttäytyminen ja piirto |
-| `src/utils/ObjectPool.js` | Geneerinen objektipooli roskienkeruun (GC) eliminointiin |
-| `src/utils/math.js` | Pelimatematiikka (`lerp`, `clamp`, `distanceSq`, `angleBetween`) |
-| `src/utils/Collision.js` | 2D-törmäystarkistukset (`circleVsCircle`, `rectVsRect`, `circleVsRect`) |
+| `index.html` | Canvas element, HUD/UI overlays, and on-screen mobile touch controls |
+| `style.css` | Responsive layout, letterbox scaling, color tokens, and modal animations |
+| `src/main.js` | Bootstrap script, dependency wiring, and initial scene activation |
+| `src/core/Engine.js` | Deterministic 60 FPS loop, clamped delta-time, tab visibility pause/resume |
+| `src/core/Input.js` | Unified input abstraction (keyboard, mouse, virtual touch controls) |
+| `src/core/Audio.js` | 100% code-based procedural Web Audio API synthesizer |
+| `src/core/State.js` | Scene base class and object-pooled particle system |
+| `src/scenes/` | Discrete game scenes (`enter`, `exit`, `update`, `render`) |
+| `src/entities/` | Game objects, state, behavior, and rendering |
+| `src/utils/ObjectPool.js` | Generic object pool for zero-allocation GC optimization |
+| `src/utils/math.js` | Vector math helpers (`lerp`, `clamp`, `distanceSq`, `angleBetween`) |
+| `src/utils/Collision.js` | 2D collision tests (`circleVsCircle`, `rectVsRect`, `circleVsRect`) |
 
 ---
 
-## 3. Pelisilmukan ja renderöinnin säännöt
+## 3. Game Loop & Rendering Rules
 
 1. **Delta-Time (`dt`)**:
-   - Kaikki liike ja aikalaskenta kerrotaan `dt`:llä (sekunneissa).
-   - `Math.min(dt, 0.1)` estää hyppäykset lagipiikeissä.
-2. **Virtuaaliresoluutio (Canvas Scaling)**:
-   - Pelin sisäinen virtuaaliresoluutio (oletus: 960x540 widescreen).
-   - Canvas sovitetaan näyttöön säilyttäen kuvasuhde (letterbox/pillarbox).
-   - Hiiren ja kosketuksen ruutukoordinaatit muunnetaan aina virtuaalikoordinaateiksi `engine.screenToVirtual(x, y)`.
-3. **Objektipoolit (Object Pooling)**:
-   - Ammukset, partikkelit ja viholliset kierrätetään pooleissa GC-nykimisen välttämiseksi.
-4. **Äänten Autoplay**:
-   - `AudioContext` herätetään ensimmäisestä käyttäjän painalluksesta (`audio.init()`).
+   - All motion and timers are scaled by `dt` (in seconds).
+   - `Math.min(dt, 0.1)` guards against tunneling and spiral-of-death lag spikes.
+2. **Virtual Resolution (Canvas Scaling)**:
+   - Fixed internal coordinate space (default: 960x540 widescreen).
+   - Canvas scales responsively while preserving aspect ratio (letterbox/pillarbox).
+   - Mouse and touch screen coordinates must always be converted to virtual canvas coordinates via `engine.screenToVirtual(x, y)`.
+3. **Object Pooling**:
+   - Bullets, particles, and enemies are recycled in object pools to eliminate Garbage Collection stutter.
+4. **Audio Autoplay**:
+   - `AudioContext` is initialized or resumed on the first user interaction (`audio.init()`).

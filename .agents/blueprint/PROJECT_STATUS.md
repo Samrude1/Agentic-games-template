@@ -1,54 +1,54 @@
-# Projektin Nykytila & Toimintasuunnitelma (Project Status & Roadmap)
+# Project Status & Roadmap (PROJECT_STATUS.md)
 
-Tämä dokumentti pitää kirjaa projektin todellisesta edistymisestä, havaituista bugeista, teknisestä velasta ja seuraavista kehitysaskeleista. Päivitetään jokaisen kehityssprintin yhteydessä.
-
----
-
-## 1. Yhteenveto (Executive Status)
-- **Projektin tila**: Template valmis ja optimoitu (Skill-First Solo Dev Kit)
-- **Valmiusaste arviolta**: 100% (Työkalupakki & Pelirunko valmis)
-- **Viimeisin päivitys**: 2026-09-02
-- **Kriittisimmät havainnot / Fokus**:
-  - Templaatin arkkitehtuuri siivottu Skill-First -malliin.
-  - Uudet skillit lisätty: `/test` (automaattitestaus), `/debug` (vianetsintä), `/build` (PWA & jakelu).
-  - Utility-kirjasto (`ObjectPool.js`, `math.js`, `Collision.js`) toteutettu ja integroitu.
-  - Valmis uuden pelin aloitukseen (`/init`) tai olemassa olevan projektin kartoitukseen (`/onboard`).
+This document tracks verified implementation progress, active feature matrix, technical debt, and sprint action plans. Update this after each development sprint.
 
 ---
 
-## 2. Ominaisuusmatriisi (Feature Matrix)
+## 1. Executive Status
+- **Current State**: Template Ready & Optimized (Skill-First Solo Dev Kit)
+- **Estimated Completion**: 100% (Core Scaffold & Toolkit complete)
+- **Last Updated**: 2026-09-02
+- **Key Focus**:
+  - Skill-First architecture established.
+  - Skills active: `/init`, `/onboard`, `/test`, `/debug`, `/review`, `/save`, `/resume`, `/build`.
+  - Utility library (`ObjectPool.js`, `math.js`, `Collision.js`) integrated.
+  - Ready for new game initialization (`/init`) or legacy onboarding (`/onboard`).
 
-| Osa-alue | Ominaisuus | Tila | Huomiot |
+---
+
+## 2. Feature Matrix
+
+| Domain | Feature | Status | Notes |
 | :--- | :--- | :--- | :--- |
-| **Ydin (Core)** | Pelisilmukka & delta-time | 🟩 Valmis | 60 FPS `requestAnimationFrame`, clampattu `dt` |
-| **Ydin (Core)** | Pause/Resume & Taustasuojaus | 🟩 Valmis | `visibilitychange` estää lagipiikit välilehden vaihdossa |
-| **Ydin (Core)** | Canvas-skaalaus & resoluutio | 🟩 Valmis | Aspect ratio -säilytys, letterbox ja virtuaalikoordinaatit |
-| **Ydin (Core)** | Objektipoolit (Object Pool) | 🟩 Valmis | `ObjectPool.js` eliminoidakseen GC-kuorman |
-| **Ydin (Core)** | Pelimatematiikka & Fysiikka | 🟩 Valmis | `math.js` (`lerp`, `clamp`, `distanceSq`, `normalize`) |
-| **Ydin (Core)** | Törmäystarkistukset | 🟩 Valmis | `Collision.js` (`circleVsCircle`, `rectVsRect`, `circleVsRect`) |
-| **Syötteet** | Näppäimistö & Hiiri | 🟩 Valmis | Yhtenäistetty `Input.js` |
-| **Syötteet** | Kosketusohjaus / Touch | 🟩 Valmis | On-screen virtuaaliohjaus mobiililaitteille |
-| **Grafiikka & UI** | HUD & Overlay-valikot | 🟩 Valmis | Start overlay, popIn-animaatiot, `:root`-värit |
-| **Grafiikka & UI** | Partikkelit & Screen Shake | 🟩 Valmis | `ParticleEmitter` käyttää `ObjectPool`ia |
-| **Äänet** | Web Audio tehosteet | 🟩 Valmis | 100% koodipohjainen synteesi, tarkka Web Audio -kellotus |
-| **Testaus** | Automaattinen selaintestaus | 🟩 Valmis | `/test` (`game-test` skill) |
-| **Vianetsintä** | Vikadiagnostiikka & Bugiloki | 🟩 Valmis | `/debug` (`game-debug` skill & `KNOWN_BUGS.md`) |
-| **Jakelu** | PWA & itch.io paketointi | 🟩 Valmis | `/build` (`game-deploy` skill) |
-| **Muisti** | Sessiomuisti & kontekstinvaihto | 🟩 Valmis | `/save` ja `/resume` (`game-memory` skill) |
+| **Core** | Game Loop & Delta-Time | 🟩 Complete | 60 FPS `requestAnimationFrame`, clamped `dt` |
+| **Core** | Tab Visibility Pause/Resume | 🟩 Complete | `visibilitychange` guards against lag spikes |
+| **Core** | Canvas Scaling & Aspect Ratio | 🟩 Complete | Aspect-ratio letterbox & virtual coordinates |
+| **Core** | Object Pooling | 🟩 Complete | `ObjectPool.js` for zero GC pressure |
+| **Core** | Game Math & Physics Helpers | 🟩 Complete | `math.js` (`lerp`, `clamp`, `distanceSq`, `normalize`) |
+| **Core** | Collision Detection | 🟩 Complete | `Collision.js` (`circleVsCircle`, `rectVsRect`, `circleVsRect`) |
+| **Inputs** | Keyboard & Mouse | 🟩 Complete | Unified `Input.js` |
+| **Inputs** | Mobile Touch Controls | 🟩 Complete | On-screen virtual D-pad and action buttons |
+| **Graphics & UI** | HUD & Modal Overlays | 🟩 Complete | Start screen, popIn animations, `:root` tokens |
+| **Graphics & UI** | Particle FX & Screen Shake | 🟩 Complete | `ParticleEmitter` powered by `ObjectPool` |
+| **Audio** | Web Audio Sound Effects | 🟩 Complete | Procedural synthesis with precise Web Audio clock |
+| **Testing** | Automated Browser Testing | 🟩 Complete | `/test` (`game-test` skill) |
+| **Diagnostics** | Root Cause Diagnostics | 🟩 Complete | `/debug` (`game-debug` skill & `KNOWN_BUGS.md`) |
+| **Packaging** | PWA & Distribution | 🟩 Complete | `/build` (`game-deploy` skill) |
+| **Memory** | Long-Term Session Memory | 🟩 Complete | `/save` & `/resume` (`game-memory` skill) |
 
-*Tilat: 🟩 Valmis | 🟨 Kesken / Työn alla | 🟥 Buginen / Vaatii korjausta | ⬜ Ei aloitettu*
-
----
-
-## 3. Tekninen velka & Korjatut asiat (Technical Debt)
-- [x] Korjattu `ParticleEmitter`: korvattu jatkuva `new` ja `splice()` `ObjectPool`-kierrätyksellä.
-- [x] Korjattu välilehden vaihdon lagipiikit: lisätty `visibilitychange` `Engine.js`:ään.
-- [x] Korjattu `Audio.js`:n `playWin()`: poistettu epätarkka `setTimeout()` ja siirrytty `AudioContext.currentTime` -aikataulutukseen.
-- [x] Korjattu Style Guide -synkronointi: `GameScene.js` lukee värit dynaamisesti CSS:n `:root`-muuttujista.
+*Status Legend: 🟩 Complete | 🟨 In Progress | 🟥 Defect / Needs Fix | ⬜ Planned*
 
 ---
 
-## 4. Seuraavat askeleet (Solo Dev Roadmap)
-1. **Kun aloitat uuden pelin**: Kirjoita `/init` käynnistääksesi Grill-Me -haastattelun.
-2. **Kun haluat ottaa olemassa olevan koodin haltuun**: Kirjoita `/onboard`.
-3. **Kun haluat testata peliä**: Kirjoita `/test`.
+## 3. Technical Debt & Resolved Issues
+- [x] Fixed `ParticleEmitter`: Replaced runtime `new` allocations and `splice()` with `ObjectPool`.
+- [x] Fixed tab-switch lag spikes: Implemented `visibilitychange` in `Engine.js`.
+- [x] Fixed audio timing: Replaced `setTimeout()` with `AudioContext.currentTime` scheduling.
+- [x] Synchronized Style Guide: `GameScene.js` dynamically queries `:root` variables via `getComputedStyle`.
+
+---
+
+## 4. Solo Dev Roadmap
+1. **To start a new game**: Type `/init` to launch the Grill-Me interview.
+2. **To take over existing code**: Type `/onboard`.
+3. **To verify gameplay**: Type `/test`.

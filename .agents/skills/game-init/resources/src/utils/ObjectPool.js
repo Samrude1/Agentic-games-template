@@ -1,30 +1,29 @@
 /**
  * ObjectPool.js
- * Suorituskykyinen geneerinen objektipooli roskienkeruun (Garbage Collection)
- * aiheuttamien lagipiikkien ja nykimisen estämiseksi pelisilmukassa.
+ * Generic reusable object pool to eliminate Garbage Collection (GC)
+ * frame stutter and latency spikes in the game loop.
  */
 export class ObjectPool {
   /**
-   * @param {() => any} factoryFn Funktio, joka luo uuden tyhjän objektin
-   * @param {number} [initialSize=50] Alustettava vapaiden objektien määrä
+   * @param {() => any} factoryFn Factory function that instantiates a clean object
+   * @param {number} [initialSize=50] Number of instances to pre-populate
    */
   constructor(factoryFn, initialSize = 50) {
     if (typeof factoryFn !== 'function') {
-      throw new Error('ObjectPool vaatii parametrina factory-funktion.');
+      throw new Error('ObjectPool requires a valid factory function.');
     }
     this.factory = factoryFn;
     this.pool = [];
     this.active = new Set();
 
-    // Esialusta pooli
+    // Pre-populate pool
     for (let i = 0; i < initialSize; i++) {
       this.pool.push(this.factory());
     }
   }
 
   /**
-   * Varaa ja palauttaa vapaan objektin poolista.
-   * Jos pooli on tyhjä, luodaan automaattisesti uusi.
+   * Acquires an idle object from the pool, or instantiates a new one if pool is empty.
    * @returns {any}
    */
   acquire() {
@@ -37,7 +36,7 @@ export class ObjectPool {
   }
 
   /**
-   * Palauttaa käytössä olleen objektin takaisin vapaiden pooliin.
+   * Releases an active object back into the idle pool.
    * @param {any} obj
    */
   release(obj) {
@@ -48,7 +47,7 @@ export class ObjectPool {
   }
 
   /**
-   * Palauttaa kaikki aktiiviset objektit takaisin pooliin.
+   * Releases all active objects back into the pool.
    */
   releaseAll() {
     for (const obj of this.active) {
@@ -58,7 +57,7 @@ export class ObjectPool {
   }
 
   /**
-   * Tyhjentää koko poolin.
+   * Purges the entire pool.
    */
   clear() {
     this.pool.length = 0;

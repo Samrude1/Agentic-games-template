@@ -1,7 +1,7 @@
 /**
  * State.js
- * Skenejen / pelitilojen pohjaluokka ja partikkelisysteemi visuaalista palautetta varten.
- * Optimoitu suorituskykyiseksi käyttämällä ObjectPoolia roskienkeruun estämiseksi.
+ * Base class for game scenes and object-pooled particle system.
+ * Optimized with ObjectPool to eliminate Garbage Collection frame stutter.
  */
 
 import { ObjectPool } from '../utils/ObjectPool.js';
@@ -19,8 +19,8 @@ export class Scene {
 }
 
 /**
- * Optimoitu partikkeliefektijärjestelmä (Juice / screen shake & kipinät).
- * Käyttää sisäistä objektipoolia, jotta partikkeleita ei allokoida jatkuvasti uudelleen.
+ * High-performance particle emitter for juice and visual impact feedback.
+ * Leverages an internal ObjectPool to avoid runtime heap allocations.
  */
 export class ParticleEmitter {
   constructor(maxParticles = 200) {
@@ -63,7 +63,7 @@ export class ParticleEmitter {
 
       if (p.life <= 0) {
         this.pool.release(p);
-        // Nopea poisto ilman taulukon siirtoa (Swap with last element)
+        // Fast swap-and-pop removal without shifting array memory
         const last = this.activeParticles.pop();
         if (i < this.activeParticles.length) {
           this.activeParticles[i] = last;
@@ -89,7 +89,7 @@ export class ParticleEmitter {
   }
 
   /**
-   * Palauttaa kaikki partikkelit takaisin pooliin ja tyhjentää ruudun.
+   * Returns all active particles back to the pool and resets state.
    */
   clear() {
     for (const p of this.activeParticles) {

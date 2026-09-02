@@ -1,19 +1,19 @@
 /**
  * Engine.js
- * Vastaa pelisilmukasta, virtuaaliresoluution skaalauksesta ja tilojen/skenejen päivityksestä.
- * Sisältää automaattisen taustalle siirtymisen (visibilitychange) ja suojatun delta-timen.
+ * Manages the game loop, virtual resolution scaling, and scene state transitions.
+ * Features automatic tab visibility recovery and clamped delta-time.
  */
 export class Engine {
   /**
    * @param {Object} config
    * @param {string} config.canvasId
-   * @param {number} [config.width=960] Virtuaalileveys
-   * @param {number} [config.height=540] Virtuaalikorkeus
+   * @param {number} [config.width=960] Virtual canvas width
+   * @param {number} [config.height=540] Virtual canvas height
    */
   constructor({ canvasId = 'game-canvas', width = 960, height = 540 } = {}) {
     this.canvas = document.getElementById(canvasId);
     if (!this.canvas) {
-      throw new Error(`Canvas elementtiä id:llä "${canvasId}" ei löytynyt.`);
+      throw new Error(`Canvas element with id "${canvasId}" not found.`);
     }
     this.ctx = this.canvas.getContext('2d');
     this.virtualWidth = width;
@@ -43,7 +43,7 @@ export class Engine {
   initEventListeners() {
     window.addEventListener('resize', () => this.resizeCanvas());
 
-    // Suojaa peli lagipiikeiltä, kun käyttäjä vaihtaa välilehteä
+    // Protect game from delta-time spikes when user switches tabs
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
         this.pause();
@@ -53,12 +53,12 @@ export class Engine {
     });
 
     window.addEventListener('blur', () => {
-      // Valinnainen: peli voidaan asettaa tauolle kun ikkuna menettää fokuksen
+      // Optional: auto-pause on window blur if desired
     });
   }
 
   /**
-   * Skaalaa canvasin säilyttäen kuvasuhteen ja keskittää sen ruudulle.
+   * Scales canvas maintaining aspect ratio and centers within viewport.
    */
   resizeCanvas() {
     const container = this.canvas.parentElement;
@@ -77,7 +77,7 @@ export class Engine {
   }
 
   /**
-   * Rekisteröi uusi skene
+   * Register a new scene
    */
   addScene(name, scene) {
     scene.engine = this;
@@ -85,12 +85,12 @@ export class Engine {
   }
 
   /**
-   * Vaihda aktiivista skeneä
+   * Switch active scene
    */
   switchScene(name, params = {}) {
     const scene = this.scenes.get(name);
     if (!scene) {
-      console.error(`Skeneä "${name}" ei ole rekisteröity.`);
+      console.error(`Scene "${name}" is not registered.`);
       return;
     }
 
@@ -123,7 +123,7 @@ export class Engine {
   resume() {
     if (!this.isPaused) return;
     this.isPaused = false;
-    // Nollaa edellinen aika, jottei pitkästä tauosta aiheudu dt-hyppyä
+    // Reset lastTime to prevent delta-time explosion after unpausing
     this.lastTime = performance.now();
   }
 
@@ -141,12 +141,12 @@ export class Engine {
       return;
     }
 
-    // Delta-time sekunneissa, rajoitettu max 0.1s (100ms) lagipiikkien varalta
+    // Delta-time in seconds, clamped to max 0.1s (100ms) to prevent teleportation
     let dt = (currentTime - this.lastTime) / 1000;
     dt = Math.min(dt, 0.1);
     this.lastTime = currentTime;
 
-    // FPS-laskenta
+    // Framerate calculation
     this.framesThisSecond++;
     if (currentTime > this.lastFpsUpdate + 1000) {
       this.fps = this.framesThisSecond;
@@ -154,18 +154,18 @@ export class Engine {
       this.lastFpsUpdate = currentTime;
     }
 
-    // Päivitä aktiivinen skene
+    // Update active scene
     if (this.currentScene && typeof this.currentScene.update === 'function') {
       this.currentScene.update(dt);
     }
 
-    // Tyhjennä ruutu ja renderöi
+    // Clear and render
     this.ctx.clearRect(0, 0, this.virtualWidth, this.virtualHeight);
     if (this.currentScene && typeof this.currentScene.render === 'function') {
       this.currentScene.render(this.ctx);
     }
 
-    // Valinnainen FPS-näyttö
+    // Optional FPS overlay
     if (this.showFps) {
       this.renderFps(this.ctx);
     }
@@ -184,7 +184,7 @@ export class Engine {
   }
 
   /**
-   * Muuntaa ruutukoordinaatit (hiiri/touch) canvasin sisäisiksi virtuaalikoordinaateiksi.
+   * Converts screen (mouse/touch) coordinates to internal virtual canvas coordinates.
    */
   screenToVirtual(screenX, screenY) {
     const rect = this.canvas.getBoundingClientRect();

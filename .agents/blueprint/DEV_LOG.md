@@ -1,15 +1,17 @@
-# Kehitysloki ja Päiväkirja (Development Log)
+# Developer Diary (DEV_LOG.md)
 
-Tähän dokumenttiin kertyy pysyvä kehityshistoria ja tärkeimmät arkkitehtuuripäätökset aikajärjestyksessä. `/save` -komento lisää tähän uuden merkinnän jokaisen istunnon päätteeksi.
+Chronological record of architectural decisions, completed sprints, and development milestones.
 
 ---
 
-## [Pvm] - Istunto: Projektin Alustus & Työkalupakki
-- **Kehittäjä & Agentti**: Uuden kehitystemplaten ja työnkulkujen rakentaminen.
-- **Tärkeimmät saavutukset**:
-  - Luotu 60 FPS deterministinen pelimoottoripohja (`Engine.js`, `Input.js`, `Audio.js`, `State.js`).
-  - Luotu työkalut: `/init`, `/onboard`, `/review`, `/save` ja `/resume`.
-  - Pystytetty `.agents/blueprint/` projektin totuuden lähteeksi.
-- **Arkkitehtuuripäätökset**:
-  - Käytetään puhdasta HTML5 Canvasia ilman ulkoisia kirjastoja maksimaalisen suorituskyvyn takaamiseksi.
-  - Kaikki äänet syntetisoidaan Web Audio APIlla, jotta vältytään ulkoisilta äänitiedostoilta.
+### [2026-09-02] – Template Modernization & Skill-First Transition
+- **Goal**: Upgrade template to modern AI pair-programming standards.
+- **Changes**:
+  - Eliminated `.agents/workflows/` duplicate layer.
+  - Implemented `AGENTS.md` and standard slash commands (`/init`, `/onboard`, `/test`, `/debug`, `/review`, `/save`, `/resume`, `/build`).
+  - Implemented `ObjectPool.js` to eliminate Garbage Collection frame stutter.
+  - Implemented `math.js` and `Collision.js`.
+  - Added visibilitychange auto-pause and safe delta-time recovery in `Engine.js`.
+  - Fixed Web Audio API timing in `Audio.js`.
+  - Translated all documentation, skills, and blueprints to English.
+  - Synced and pushed to GitHub `Agentic-games-template`.

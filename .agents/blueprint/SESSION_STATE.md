@@ -1,41 +1,33 @@
-# Aktiivinen Sessiomuisti (Active Session State)
+# Session State & Handoff (SESSION_STATE.md)
 
-Tämä tiedosto toimii agenttien välisenä "viestikapulana" ja muistipuskurina. Se päivitetään aina istunnon päättyessä komennolla `/save` ja luetaan uuden istunnon alkaessa komennolla `/resume`.
-
----
-
-## 1. Viimeisin Istunto (Last Session Info)
-- **Päivämäärä & Aika**: [Pvm ja klo]
-- **Session fokus**: [Mitä tässä istunnossa kehitettiin tai tavoiteltiin]
-- **Kokonaisvalmiusaste**: [esim. 25%]
+This file acts as the active memory baton between AI agent conversations. It records what was accomplished and defines the immediate starting point for the next session.
 
 ---
 
-## 2. Mitä Tehtiin Tässä Istunnossa (Accomplishments)
-- [x] [Muutos 1: esim. Lisätty pelaajan hyppymekaniikka ja ääni]
-- [x] [Muutos 2: esim. Refaktoroitu Input.js tukemaan virtuaalisia mobiilinappeja]
-- [x] [Muutos 3: esim. Korjattu törmäyslaskennan bugi GameScene.js:ssä]
+## 📅 Session Snapshot
+- **Timestamp**: 2026-09-02 22:45
+- **Code Stability**: ✅ 100% Tested & Verified (Boilerplate cleanly running)
 
 ---
 
-## 3. Nykyinen Tekninen Tila (Current State & Stability)
-- **Toimiiko peli tällä hetkellä?**: Kyllä / Ei (konsolissa ei virheitä / peli käynnistyy)
-- **Testatut ominaisuudet**: Pelaajan liike, kosketusnapit mobiilikoossa, äänisynteesi.
-- **Kesken jääneet asiat / Estävät tekijät (Blockers)**:
-  - [Esim. Vihollisten spawnauslogiikka on aloitettu, mutta aaltomekaniikka puuttuu]
+## 🏆 Key Achievements Completed
+1. Full restructuring to modern Skill-First architecture (removed legacy workflow duplicates).
+2. Created `AGENTS.md` and translated all skills and documentation to English.
+3. Added missing solo developer skills: `/test`, `/debug`, and `/build`.
+4. Built zero-allocation utility library: `ObjectPool.js`, `math.js`, `Collision.js`.
+5. Pushed cleanly to GitHub repository `Agentic-games-template`.
 
 ---
 
-## 4. Seuraava Tehtävä Uudelle Sessiolle (Next Immediate Task)
-👉 **Aloita tästä**: [Tarkka kuvaus ensimmäisestä tehtävästä uudessa sessiossa]
-- **Tiedostot, joita muokataan seuraavaksi**:
+## 👉 Immediate Next Task for Fresh Session
+- **Next Task**: Run `/init` to scaffold a new game, or `/onboard` to take over an existing project.
+- **Target Files**:
   - `src/scenes/GameScene.js`
-  - `src/entities/Enemy.js`
+  - `.agents/blueprint/GDD.md`
 
 ---
 
-## 5. Uudelle Agentille: Luettavat Avaintiedostot (Key Files to Read)
-*Lue nämä 2–4 tiedostoa päästäksesi välittömästi kärryille koodin nykytilasta ilman koko projektin uudelleenlukua:*
-1. `src/main.js` (Pelin alustus ja skenekytkennät)
-2. `src/scenes/GameScene.js` (Aktiivinen pelilogiikka)
-3. `.agents/blueprint/PROJECT_STATUS.md` (Tiekartta ja ominaisuusmatriisi)
+## 📖 Key Files to Read (Max 2–4 Files)
+1. `.agents/blueprint/PROJECT_STATUS.md`
+2. `.agents/blueprint/GDD.md`
+3. `src/scenes/GameScene.js`

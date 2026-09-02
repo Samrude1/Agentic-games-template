@@ -1,99 +1,63 @@
 ---
 name: game-review
 description: >-
-  Auditoi ja optimoi HTML/CSS/JS -peliprojektin koodin laadun. Käytä tätä taitoa aina,
-  kun käyttäjä pyytää katselmoimaan koodin, tarkistamaan laadun, optimoimaan pelin,
-  etsimään spagettikoodia tai suorituskykyongelmia tai ajaa /review tai /optimize -komennon.
+  Audits and optimizes HTML/CSS/JS game code quality. Use this skill whenever
+  the user requests a code review, quality check, optimization, spaghetti code audit,
+  or runs /review or /optimize.
 ---
 
 # Game Code Review & Optimization Skill
 
-Tämä taito ohjaa agenttia suorittamaan syvällisen laadunvarmistuksen ja suorituskykyoptimoinnin HTML/CSS/JS -peliprojektille. Sitä käytetään pitkien koodaussessioiden jälkeen, monen kehittäjän projekteissa tai aina kun halutaan varmistaa, että koodi täyttää ammattimaiset standardit.
+This skill guides the agent in conducting an in-depth code quality, architecture, and performance audit for an HTML5 Canvas / JavaScript game. It is designed for post-sprint quality gates and multi-session validation.
 
 ---
 
-## Työnkulun vaiheet
+## Audit Checklist
 
-### Vaihe 1: Koodin analyysi (Audit Checklist)
-
-Käy läpi kaikki `src/`- ja `index.html` -tiedostot seuraavan tarkistuslistan avulla:
-
-#### 1. Suorituskyky & Pelisilmukan tehokkuus (Performance & 60 FPS)
-- **Garbage Collection (GC) -kuorma**:
-  - Etsi `update()`- ja `render()`-metodien sisältä `new`-kutsuja (esim. `new Vector()`, `new Particle()`) tai olio-/taulukkoliteraaleja (`{}`, `[]`).
-  - *Sääntö*: Silmukassa syntyvät ja kuolevat objektit (ammukset, partikkelit, tehosteet) on hallittava **objektipooleilla (Object Pool)**.
-- **Törmäystarkistukset**:
-  - Onko vihollisten ja ammusten törmäystarkistus $O(n^2)$? Jos objekteja on paljon, karsitaanko laskentaa (spatial grid, bounding radius, etäisyysvertailu ilman `Math.sqrt`)?
-- **Canvas-renderöinti**:
-  - Vältetäänkö tarpeettomia `ctx.save()` / `ctx.restore()` -kutsuja?
-  - Piirretäänkö vain ruudulla näkyvät asiat (Frustum culling)?
+### 1. Performance & 60 FPS Standards
+- **Garbage Collection (GC) Pressure**:
+  - Scan `update()` and `render()` loops for `new` calls (e.g. `new Vector()`, `new Particle()`) or object/array literals (`{}`, `[]`).
+  - *Rule*: Entities created/destroyed in loops must be managed via **`ObjectPool.js`**.
+- **Collision Efficiency**:
+  - Is collision checking $O(n^2)$? Can checks use bounding radius, spatial grids, or squared distance comparison (`distanceSq`) to avoid `Math.sqrt`?
+- **Canvas Rendering**:
+  - Are unnecessary `ctx.save()` / `ctx.restore()` calls minimized?
+  - Is off-screen culling applied?
 - **DOM & Layout Thrashing**:
-  - Luetaanko DOM-ominaisuuksia (`offsetWidth`, `getBoundingClientRect`) pelisilmukan sisällä? (Nämä tulisi lukea vain ikkunan koon muuttuessa `resize`-kuuntelijassa).
+  - Are layout properties (`getBoundingClientRect`, `offsetWidth`) read inside the game loop? (Must only be read on resize).
 
-#### 2. Arkkitehtuuri & "Spagetti"-koodi
-- **Yhden vastuun periaate (Single Responsibility)**:
-  - Onko `GameScene` tai muu tiedosto paisunut liian suureksi (esim. yli 300–400 riviä), jossa sekoittuu piirto, fysiikka, äänet ja pelisäännöt?
-  - Eriytyvätkö pelaaja, viholliset ja ammukset omiin entiteettiluokkiinsa (`src/entities/`)?
-- **Kytkentä (Coupling)**:
-  - Pääsevätkö entiteetit käsiksi suoraan toistensa yksityisiin muuttujiin?
-- **Globaalit muuttujat**:
-  - Varmista, ettei koodissa käytetä `window.myVar` tai `var`-muuttujia.
+### 2. Architecture & Decoupling
+- **Single Responsibility**:
+  - Is any scene or file overly monolithic (>300–400 lines) mixing physics, rendering, audio, and rules?
+  - Are entities isolated in `src/entities/`?
+- **Coupling & Encapsulation**:
+  - Do entities mutate private variables across boundaries?
+- **Global Variables**:
+  - Verify absence of `window.x` or `var` variables.
 
-#### 3. Kommentointi & Koodin luettavuus
-- **JSDoc-dokumentaatio**:
-  - Onko tärkeimmät luokat, metodit ja parametrit dokumentoitu (`/** ... */`)?
-- **Pelimatematiikan ja fysiikan selitykset**:
-  - Onko monimutkaiset kulmalaskennat, kiihtyvyysvektorit ja fysiikkakaavat selitetty kommenteissa niin, että muu tiimi ymmärtää ne vaivattomasti?
-- **Taikaluvut (Magic Numbers)**:
-  - Onko koodissa suoria numeroarvoja ilman selittävää vakiota (esim. `x += 5.2` -> `x += ENEMY_PATROL_SPEED * dt`)?
+### 3. Readability & Code Documentation
+- **JSDoc**:
+  - Are core classes, public methods, and parameters documented?
+- **Game Math Explanations**:
+  - Are complex physics, steering behaviors, or trigonometry formulas commented clearly?
+- **Magic Numbers**:
+  - Are literal numbers converted into named constants (`x += SPEED * dt`)?
 
-#### 4. Luotettavuus & Poikkeustilanteet
-- Onko `dt` rajoitettu (`Math.min(dt, 0.1)`), jotta välilehden taustalle jättäminen ei riko peliä?
-- Palautuuko peli nätisti, kun ikkuna menettää fokuksen (`blur`-tapahtuma)?
-- Toimivatko äänet selaimen autoplay-rajoituksista huolimatta?
+### 4. Edge Cases & Resilience
+- Is `dt` clamped (`Math.min(dt, 0.1)`)?
+- Does the engine handle tab switching smoothly (`visibilitychange`)?
+- Are audio calls guarded against autoplay policies?
 
-#### 5. UI, Tyylinmukaisuus & Tyyliliukuma (Style Drift Audit)
-- Vertaa käyttöliittymää tiedostoon `.agents/blueprint/STYLE_GUIDE.md`:
-  - **Epäviralliset painikkeet**: Löytyykö `<button>`-elementtejä, joilta puuttuu standardiluokka (`.btn-primary`, `.btn-secondary`, `.touch-btn`)?
-  - **Kovakoodatut värit**: Etsi heksakoodeja (`#fff`, `#38bdf8`) tai `rgb()`-arvoja CSS:stä tai JS:stä, joita ei ole sidottu `:root`-muuttujiin (`var(--...)`).
-  - **Suorat inline-tyylit**: Etsi `style="..."` -attribuutteja tai JS `elem.style.color` -sijoituksia.
-  - **Reunapyöristykset ja fontit**: Noudattavatko kaikki komponentit `--radius-*` -muuttujia ja sovittua fonttiperhettä?
-  - **Canvas-väripaletti**: Ovatko canvas-piirron värit linjassa `STYLE_GUIDE.md`:n paletin kanssa?
+### 5. UI & Style Drift Audit
+- Compare interface elements against `.agents/blueprint/STYLE_GUIDE.md`:
+  - **Buttons**: Are all buttons styled with `.btn-*` or `.touch-btn` classes?
+  - **Colors**: Are hex codes in CSS replaced with `:root` CSS variables?
+  - **Canvas Palette**: Do canvas draw calls align with the style guide palette?
 
 ---
 
-### Vaihe 2: Raportin luominen (.agents/blueprint/CODE_REVIEW.md)
+## Deliverables
 
-Kirjaa havainnot dokumenttiin `.agents/blueprint/CODE_REVIEW.md`:
-1. Määritä arvosanat (A–F) jokaiselle osa-alueelle.
-2. Listaa kriittiset havainnot.
-3. Anna selkeät koodiesimerkit: **Nykyinen toteutus vs. Optimoitu toteutus**.
-4. Päivitä samalla `.agents/blueprint/PROJECT_STATUS.md` -tiedoston teknisen velan lista löydöksillä.
-
----
-
-### Vaihe 3: Katselmusraportti kehittäjälle (Executive Summary)
-
-Esitä käyttäjälle selkeä tiivistelmä:
-
-```markdown
-## 🔍 Koodin Laatu- ja Optimointiraportti (Health Review)
-
-### Yhteenveto & Terveyspisteet:
-- **Suorituskyky**: [Arvosana A–F] - [Lyhyt huomio]
-- **Arkkitehtuuri**: [Arvosana A–F] - [Lyhyt huomio]
-- **Kommentointi & Luettavuus**: [Arvosana A–F] - [Lyhyt huomio]
-- **Kokonaisarvosana**: [Arvosana A–F]
-
-### 🚨 Kriittisimmät havainnot:
-1. [Havainto 1: esim. GC-nykiminen partikkeleista]
-2. [Havainto 2: esim. Jättiluokka GameScene kaipaa pilkkomista]
-
-### 💡 Ehdotetut toimenpiteet (Action Plan):
-1. [Toimenpide 1 - Pikaoptimointi]
-2. [Toimenpide 2 - Refaktorointi]
-
-Täysi raportti tallennettu: `.agents/blueprint/CODE_REVIEW.md`.
-```
-
-Kysy käyttäjältä: *"Haluatko, että toteutan suoraan toimenpiteen 1 (esim. objektipoolin luonti / koodin refaktorointi)?"*
+1. Update `.agents/blueprint/CODE_REVIEW.md` with grades (A–F), critical findings, and before/after code refactoring snippets.
+2. Update `.agents/blueprint/PROJECT_STATUS.md` technical debt section.
+3. Present an Executive Summary to the developer with actionable proposals.
