@@ -9,6 +9,17 @@ desktop.ini
 *.swp
 *.swo
 
+# Node & dependencies
+node_modules/
+npm-debug.log*
+
+# Builds & Distribution
+dist/
+build/
+out/
+*.zip
+*.exe
+
 # Logs & temp
 *.log
 *.tmp

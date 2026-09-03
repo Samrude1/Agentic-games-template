@@ -1,10 +1,11 @@
 import { Scene, ParticleEmitter } from '../core/State.js';
 import { circleVsCircle } from '../utils/Collision.js';
+import { ScreenShake } from '../utils/ScreenShake.js';
 
 /**
  * GameScene
  * Demonstrates player movement, vector physics, collision detection,
- * particle effects, audio triggers, and multi-input handling.
+ * particle effects, screen shake juice, audio triggers, and multi-input handling.
  */
 export class GameScene extends Scene {
   /**
@@ -16,13 +17,14 @@ export class GameScene extends Scene {
     this.input = input;
     this.audio = audio;
     this.particles = new ParticleEmitter(150);
+    this.shake = new ScreenShake();
 
     // Read colors dynamically from CSS :root variables (Style Guide compliance)
     const rootStyle = getComputedStyle(document.documentElement);
     this.colors = {
       primary: rootStyle.getPropertyValue('--primary').trim() || '#38bdf8',
       accent: rootStyle.getPropertyValue('--accent').trim() || '#f43f5e',
-      text: rootStyle.getPropertyValue('--text-color').trim() || '#f8fafc'
+      text: rootStyle.getPropertyValue('--text-main').trim() || rootStyle.getPropertyValue('--text-color').trim() || '#f8fafc'
     };
 
     this.player = {
@@ -30,7 +32,8 @@ export class GameScene extends Scene {
       y: 270,
       radius: 18,
       speed: 240,
-      color: this.colors.primary
+      color: this.colors.primary,
+      health: 100
     };
 
     this.targets = [];
@@ -40,6 +43,7 @@ export class GameScene extends Scene {
 
   enter() {
     this.score = 0;
+    this.player.health = 100;
     this.player.x = this.engine.virtualWidth / 2;
     this.player.y = this.engine.virtualHeight / 2;
     this.targets = [];
@@ -101,6 +105,7 @@ export class GameScene extends Scene {
         // Collect target
         this.score += 10;
         this.audio.playCoin();
+        this.shake.addTrauma(0.25);
         this.particles.emit({
           x: t.x,
           y: t.y,
@@ -109,16 +114,29 @@ export class GameScene extends Scene {
           speed: 200,
           size: 6
         });
-        this.targets.splice(i, 1);
+
+        // Fast swap-and-pop removal without memory shifting
+        const last = this.targets.pop();
+        if (i < this.targets.length) {
+          this.targets[i] = last;
+        }
         this.spawnTarget();
       }
     }
 
+    // Escape opens menu or triggers gameover
+    if (this.input.isKeyJustPressed('Escape')) {
+      this.engine.switchScene('gameover', { score: this.score });
+      return;
+    }
+
     this.particles.update(dt);
-    this.input.postUpdate();
+    this.shake.update(dt);
   }
 
   render(ctx) {
+    ctx.save();
+    this.shake.apply(ctx, this.engine.virtualWidth / 2, this.engine.virtualHeight / 2);
     // Background coordinate grid
     ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
     ctx.lineWidth = 1;
@@ -166,5 +184,7 @@ export class GameScene extends Scene {
     ctx.fillStyle = this.colors.text;
     ctx.font = 'bold 20px system-ui, sans-serif';
     ctx.fillText(`Score: ${this.score}`, 24, 36);
+
+    ctx.restore();
   }
 }

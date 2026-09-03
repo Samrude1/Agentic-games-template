@@ -1,0 +1,25 @@
+{
+  "name": "agentic-games-template",
+  "version": "1.0.0",
+  "description": "Studio-grade HTML5 Canvas / Vanilla JavaScript game development kit for solo developers pair-programming with AI agents.",
+  "type": "module",
+  "main": "src/main.js",
+  "scripts": {
+    "test": "node --test tests/*.test.js && node scripts/check-style.js",
+    "lint:style": "node scripts/check-style.js",
+    "dev": "npx -y serve .",
+    "build:exe": "npx -y @electron/packager . --platform=win32 --arch=x64 --out=dist/exe --overwrite"
+  },
+  "keywords": [
+    "game-development",
+    "html5-canvas",
+    "vanilla-js",
+    "solo-dev",
+    "ai-agent",
+    "60fps",
+    "pwa",
+    "itch-io"
+  ],
+  "author": "Samrude1",
+  "license": "MIT"
+}

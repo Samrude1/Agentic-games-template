@@ -1,18 +1,38 @@
 ---
 name: game-review
 description: >-
-  Audits and optimizes HTML/CSS/JS game code quality. Use this skill whenever
-  the user requests a code review, quality check, optimization, spaghetti code audit,
-  or runs /review or /optimize.
+  Audits and optimizes HTML/CSS/JS game code quality and validates UI style guide compliance.
+  Use this skill whenever the user requests a code review, quality check, optimization,
+  runs /review, /optimize, or /style-check.
 ---
 
-# Game Code Review & Optimization Skill
+# Game Code Review & Style Validation Skill
 
-This skill guides the agent in conducting an in-depth code quality, architecture, and performance audit for an HTML5 Canvas / JavaScript game. It is designed for post-sprint quality gates and multi-session validation.
+This skill guides the agent in conducting an in-depth code quality, architecture, performance, and UI style guide audit for an HTML5 Canvas / JavaScript game. It guarantees that performance stays pinned at 60 FPS and that buttons, colors, and layouts never suffer from visual or stylistic drift.
 
 ---
 
-## Audit Checklist
+## ⚡ Style Guide & UI Consistency Check (`/style-check`)
+
+Always run the automated style linter first or when verifying interface elements:
+```bash
+npm run lint:style
+```
+*(Runs `node scripts/check-style.js`)*
+
+### Automated Style Rules Enforced:
+1. **Buttons**: Every `<button>` must strictly possess one of the approved classes:
+   - `.btn-primary` (Start, confirm, restart, key actions)
+   - `.btn-secondary` (Settings, back, menu options)
+   - `.touch-btn` / `.touch-action-btn` (Virtual mobile touch controls)
+   - *Ad-hoc or unstyled buttons trigger a build error.*
+2. **No Inline Styles**: Flags all `style="..."` attributes in HTML or direct element style mutations (`elem.style.background = ...`).
+3. **No Arbitrary Hex Colors**: Flags hardcoded hex colors in CSS outside of `:root`. All styles must reference design tokens (e.g. `var(--primary)`, `var(--bg-color)`).
+4. **Canvas Palette Alignment**: Canvas rendering must reference tokens via `getComputedStyle(document.documentElement).getPropertyValue('--primary')` or defined constants matching `STYLE_GUIDE.md`.
+
+---
+
+## 🔍 Full Quality Audit Checklist (`/review`)
 
 ### 1. Performance & 60 FPS Standards
 - **Garbage Collection (GC) Pressure**:
@@ -29,7 +49,7 @@ This skill guides the agent in conducting an in-depth code quality, architecture
 ### 2. Architecture & Decoupling
 - **Single Responsibility**:
   - Is any scene or file overly monolithic (>300–400 lines) mixing physics, rendering, audio, and rules?
-  - Are entities isolated in `src/entities/`?
+  - Are entities isolated in `src/entities/` inheriting from `Entity.js`?
 - **Coupling & Encapsulation**:
   - Do entities mutate private variables across boundaries?
 - **Global Variables**:
@@ -47,17 +67,13 @@ This skill guides the agent in conducting an in-depth code quality, architecture
 - Is `dt` clamped (`Math.min(dt, 0.1)`)?
 - Does the engine handle tab switching smoothly (`visibilitychange`)?
 - Are audio calls guarded against autoplay policies?
-
-### 5. UI & Style Drift Audit
-- Compare interface elements against `.agents/blueprint/STYLE_GUIDE.md`:
-  - **Buttons**: Are all buttons styled with `.btn-*` or `.touch-btn` classes?
-  - **Colors**: Are hex codes in CSS replaced with `:root` CSS variables?
-  - **Canvas Palette**: Do canvas draw calls align with the style guide palette?
+- Is input cleanup automated via `engine.registerInput(input)`?
 
 ---
 
 ## Deliverables
 
-1. Update `.agents/blueprint/CODE_REVIEW.md` with grades (A–F), critical findings, and before/after code refactoring snippets.
-2. Update `.agents/blueprint/PROJECT_STATUS.md` technical debt section.
-3. Present an Executive Summary to the developer with actionable proposals.
+1. Run `npm run lint:style` and report any style violations.
+2. Update `.agents/blueprint/CODE_REVIEW.md` with grades (A–F), critical findings, and before/after code refactoring snippets.
+3. Update `.agents/blueprint/PROJECT_STATUS.md` technical debt section.
+4. Present an Executive Summary to the developer with actionable proposals.

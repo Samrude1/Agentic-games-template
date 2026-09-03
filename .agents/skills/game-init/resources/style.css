@@ -9,6 +9,8 @@
   /* Brand & Action Colors */
   --primary: #38bdf8;
   --primary-hover: #0ea5e9;
+  --primary-dark: #2563eb;
+  --heading-end: #818cf8;
   --secondary: #64748b;
   --secondary-hover: #475569;
   --accent: #f43f5e;
@@ -16,7 +18,8 @@
   --warning: #f59e0b;
 
   /* Typography */
-  --text-color: #f8fafc;
+  --text-main: #f8fafc;
+  --text-color: var(--text-main);
   --text-muted: #94a3b8;
 
   /* Radii & Shadows */
@@ -108,7 +111,7 @@ html, body {
   font-size: 2.2rem;
   font-weight: 800;
   margin-bottom: 0.5rem;
-  background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--heading-end) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -120,7 +123,7 @@ html, body {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--primary) 0%, #2563eb 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
   color: #fff;
   border: none;
   padding: 0.9rem 2rem;

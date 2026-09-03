@@ -21,6 +21,7 @@ export class Engine {
 
     this.currentScene = null;
     this.scenes = new Map();
+    this.input = null;
 
     this.lastTime = 0;
     this.isRunning = false;
@@ -33,6 +34,14 @@ export class Engine {
     this.initCanvas();
     this.initEventListeners();
     this.resizeCanvas();
+  }
+
+  /**
+   * Links the Input manager to the engine for automated post-frame cleanup.
+   * @param {import('./Input.js').Input} input
+   */
+  registerInput(input) {
+    this.input = input;
   }
 
   initCanvas() {
@@ -168,6 +177,11 @@ export class Engine {
     // Optional FPS overlay
     if (this.showFps) {
       this.renderFps(this.ctx);
+    }
+
+    // Automated single-frame input state reset
+    if (this.input && typeof this.input.postUpdate === 'function') {
+      this.input.postUpdate();
     }
 
     requestAnimationFrame((time) => this.loop(time));
