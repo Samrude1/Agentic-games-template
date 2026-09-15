@@ -36,6 +36,7 @@ The agent must activate the corresponding skill (`.agents/skills/<skill-name>/SK
 | `/review`, `/style-check` | `game-review` | Code quality & UI style audit: linter (`npm run lint:style`), GC analysis, style drift prevention |
 | `/test`, `/playtest` | `game-test` | Automated testing: runs deterministic `npm test` + browser playtest (console errors, canvas, 60 FPS) |
 | `/debug`, `/fix` | `game-debug` | Systematic diagnostics: root cause analysis, fix proposal, `KNOWN_BUGS.md` logging |
+| `/docs`, `/document` | `game-docs` | Studio documentation: generate, sync, and audit GDD, Art Bible, Audio Spec, Level Design, QA Plan, and Marketing/Release Kit |
 | `/save`, `/checkpoint` | `game-memory` | Session end: summarize state, define next task, save handoff context |
 | `/resume`, `/start-session` | `game-memory` | Session start: read state and deliver a concise 3-sentence kick-off debrief |
 | `/build`, `/deploy` | `game-deploy` | Packaging for Web PWA, itch.io ZIP, GitHub Pages, and standalone Desktop `.exe` |

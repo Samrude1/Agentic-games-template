@@ -56,6 +56,7 @@ Control your AI assistant with crisp, standardized commands:
 | `/test` | `game-test` | **Automated Testing**: Runs deterministic unit tests (`npm test`) and browser playtesting checking console errors, canvas drawing, and 60 FPS. |
 | `/style-check` | `game-review` | **Style Validation**: Runs the automated style linter (`npm run lint:style`), enforcing button classes (`.btn-*`), `:root` tokens, and zero UI drift. |
 | `/debug` | `game-debug` | **Diagnostics**: Locates root causes (canvas coordinate bugs, NaN delta-time, z-index traps) and updates `KNOWN_BUGS.md`. |
+| `/docs` | `game-docs` | **Studio Docs**: Scaffolds, synchronizes, and audits standard studio documentation (GDD, Art Bible, Audio Spec, Level Design & Economy, QA Plan, Marketing One-Pager, Release Notes). |
 | `/review` | `game-review` | **Quality Assurance**: Inspects for GC allocations in the loop, God objects, and CSS Style Drift. |
 | `/save` | `game-memory` | **End of Day**: Compiles session achievements, logs next steps in `SESSION_STATE.md` and commits to `DEV_LOG.md`. |
 | `/build` | `game-deploy` | **Distribution**: Generates standalone Windows Desktop `.exe` binaries, offline PWA manifests, and itch.io zips. |
@@ -79,8 +80,8 @@ Control your AI assistant with crisp, standardized commands:
 │   ├── rules/
 │   │   └── game-dev.md         # Non-negotiable game dev rules (60 FPS, delta-time, pooling)
 │   └── skills/                 # ⚡ Autonomous agent tools & execution prompts
-│       ├── game-init/          # Scaffolding and studio documentation generator
-│       │   └── resources/docs/ # 📚 Studio docs templates (Art Bible, Audio, Level Design, QA, Marketing)
+│       ├── game-init/          # Scaffolding and studio initialization
+│       ├── game-docs/          # 📚 Studio docs generator & sync (GDD, Art Bible, Audio, Level Design, QA, Marketing, Release)
 │       ├── game-onboard/       # Codebase discovery and architecture mapping
 │       ├── game-review/        # GC, coupling, and automated style audits
 │       ├── game-test/          # Deterministic unit testing and automated browser verification
